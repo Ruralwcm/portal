@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rural Portal — Quản trị Web App</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;color:#1a1a1a;display:flex;height:100vh;overflow:hidden}
+
+/* ── LOGIN ── */
+.login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#0d1b2a 0%,#1b2838 50%,#1a2332 100%);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-overlay.hidden{display:none}
+.login-box{background:#fff;border-radius:16px;padding:40px 36px;width:400px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center}
+.login-box .logo-icon{font-size:48px;margin-bottom:8px}
+.login-box h1{font-size:22px;font-weight:800;color:#1a2332;margin-bottom:4px}
+.login-box h1 span{color:#4fc3f7}
+.login-box .sub{font-size:12px;color:#8492a6;margin-bottom:24px}
+.login-box label{display:block;text-align:left;font-size:12px;font-weight:600;color:#555;margin-bottom:4px}
+.login-box input{width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:8px;font-size:15px;transition:border .2s;text-align:center;letter-spacing:2px}
+.login-box input:focus{border-color:#4fc3f7;outline:none;box-shadow:0 0 0 3px rgba(79,195,247,.12)}
+.login-box .hint{font-size:10px;color:#aaa;margin-top:4px}
+.login-box button{margin-top:16px;width:100%;padding:12px;background:#1a2332;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
+.login-box button:hover{background:#2a3a52}
+.login-box .error{color:#e53935;font-size:11px;margin-top:8px;min-height:16px}
+
+/* ── SIDEBAR ── */
+.sidebar{width:240px;background:#111d2b;color:#c0ccda;display:flex;flex-direction:column;flex-shrink:0;transition:width .2s}
+.sidebar-header{padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:10px}
+.sidebar-header .logo-icon{font-size:26px}
+.sidebar-header .logo{font-size:15px;font-weight:800;color:#fff}.sidebar-header .logo span{color:#4fc3f7}
+.sidebar-header .sub{font-size:9px;color:#5a6d80;margin-top:1px}
+.sidebar-nav{flex:1;padding:8px 0;overflow-y:auto}
+.nav-section{padding:8px 16px 4px;font-size:9px;text-transform:uppercase;color:#4a5e73;letter-spacing:1.2px;font-weight:600}
+.nav-item{padding:9px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;transition:all .12s;border-left:3px solid transparent;color:#8492a6;margin:1px 0}
+.nav-item:hover{background:rgba(255,255,255,.04);color:#c0ccda}
+.nav-item.active{background:rgba(79,195,247,.08);color:#4fc3f7;border-left-color:#4fc3f7;font-weight:600}
+.nav-item .icon{width:20px;text-align:center;font-size:14px;flex-shrink:0}
+.nav-item .badge-count{margin-left:auto;background:rgba(255,255,255,.1);color:#8492a6;font-size:10px;padding:1px 7px;border-radius:10px;min-width:22px;text-align:center}
+.sidebar-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:10px;font-size:11px}
+.sidebar-footer .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#4fc3f7,#1565c0);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.sidebar-footer .user-info b{display:block;color:#e0e0e0;font-size:12px}
+.sidebar-footer .user-info span{font-size:10px;color:#5a6d80}
+.sidebar-footer .logout{cursor:pointer;margin-left:auto;color:#5a6d80;font-size:11px;padding:4px 8px;border-radius:4px;transition:all .15s}
+.sidebar-footer .logout:hover{color:#e53935;background:rgba(229,57,53,.1)}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f0f2f5}
+.topbar{background:#fff;padding:12px 20px;border-bottom:1px solid #e0e0e0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:10}
+.topbar h1{font-size:17px;font-weight:700;color:#111d2b}
+.topbar-actions{display:flex;align-items:center;gap:10px;font-size:11px;color:#888}
+.content{flex:1;padding:16px 20px;overflow-y:auto}
+
+/* ── PAGES ── */
+.page{display:none}.page.active{display:block;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── CARDS ── */
+.card{background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04);margin-bottom:14px}
+.card h3{font-size:14px;font-weight:700;color:#111d2b;margin-bottom:12px}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.card-header h3{margin-bottom:0}
+.card-subtitle{font-size:11px;color:#8492a6;margin-bottom:12px}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+@media(max-width:1024px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+.stat-card{background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04);position:relative;overflow:hidden}
+.stat-card .stat-icon{position:absolute;right:14px;top:14px;font-size:28px;opacity:.15}
+.stat-card .stat-label{font-size:11px;color:#8492a6;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.stat-card .stat-value{font-size:28px;font-weight:800;color:#111d2b}
+.stat-card .stat-change{font-size:11px;margin-top:4px}
+.stat-card .stat-change.up{color:#2e7d32}.stat-card .stat-change.down{color:#e53935}.stat-card .stat-change.neutral{color:#8492a6}
+
+/* ── GRID ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+/* ── BUTTONS ── */
+.btn{padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn-primary{background:#111d2b;color:#fff}.btn-primary:hover{background:#1f324d}
+.btn-success{background:#2e7d32;color:#fff}.btn-success:hover{background:#1b5e20}
+.btn-danger{background:#c62828;color:#fff}.btn-danger:hover{background:#b71c1c}
+.btn-outline{background:#fff;color:#111d2b;border:1px solid #ccc}.btn-outline:hover{background:#f5f5f5}
+.btn-sm{padding:5px 10px;font-size:11px}.btn-xs{padding:3px 8px;font-size:10px}
+.btn-group{display:flex;gap:6px}
+
+/* ── TABLE ── */
+.table-wrap{overflow-x:auto;border:1px solid #e8e8e8;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{background:#f7f8fa;padding:9px 12px;text-align:left;font-weight:600;border-bottom:2px solid #e0e0e0;white-space:nowrap;font-size:11px;color:#555;position:sticky;top:0}
+td{padding:8px 12px;border-bottom:1px solid #f0f0f0;vertical-align:middle}
+tr:hover td{background:#fafbfc}
+.empty-row td{text-align:center;color:#aaa;padding:30px;font-size:12px}
+
+/* ── BADGES ── */
+.badge{font-size:10px;padding:3px 9px;border-radius:10px;font-weight:600;display:inline-block}
+.badge-active{background:#e8f5e9;color:#2e7d32}
+.badge-inactive{background:#f5f5f5;color:#999}
+.badge-draft{background:#fff3e0;color:#ef6c00}
+.badge-admin{background:#e3f2fd;color:#1565c0}
+.badge-gdm{background:#fff3e0;color:#ef6c00}
+.badge-gdv{background:#e8f5e9;color:#2e7d32}
+.badge-qlkv{background:#f3e5f5;color:#7b1fa2}
+
+/* ── FORMS ── */
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:11px;font-weight:600;color:#555;margin-bottom:3px;text-transform:uppercase;letter-spacing:.3px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px;transition:border .15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#4fc3f7;outline:none;box-shadow:0 0 0 3px rgba(79,195,247,.08)}
+.form-group textarea{resize:vertical;min-height:60px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ── TOGGLE ── */
+.toggle{position:relative;width:42px;height:23px;display:inline-block}
+.toggle input{display:none}
+.toggle .slider{position:absolute;inset:0;background:#ccc;border-radius:23px;cursor:pointer;transition:.2s}
+.toggle .slider::before{content:'';position:absolute;width:17px;height:17px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s}
+.toggle input:checked+.slider{background:#4caf50}
+.toggle input:checked+.slider::before{transform:translateX(19px)}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:999}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:12px;padding:24px;width:560px;max-width:92vw;max-height:85vh;overflow-y:auto;box-shadow:0 12px 40px rgba(0,0,0,.15);animation:modalIn .2s}
+@keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(-8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal h3{font-size:16px;font-weight:700;margin-bottom:16px;color:#111d2b}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid #eee}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:8px;color:#fff;font-size:12px;font-weight:600;z-index:9999;animation:slideUp .25s;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+.toast.success{background:#2e7d32}.toast.error{background:#c62828}.toast.info{background:#1565c0}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SEARCH BAR ── */
+.search-bar{display:flex;gap:8px;align-items:center}
+.search-bar input{padding:7px 12px;border:1px solid #ddd;border-radius:6px;font-size:12px;width:200px;transition:all .15s}
+.search-bar input:focus{border-color:#4fc3f7;outline:none;box-shadow:0 0 0 3px rgba(79,195,247,.06)}
+.search-bar select{padding:7px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px}
+
+/* ── PERMISSION MATRIX ── */
+.perm-matrix td{text-align:center;font-size:16px}
+.perm-matrix td select{padding:4px 6px;border:1px solid #ddd;border-radius:4px;font-size:11px}
+.perm-level-full{color:#2e7d32;font-weight:700}.perm-level-read{color:#1565c0}.perm-level-none{color:#ccc}
+
+/* ── APP CARD (Dashboard) ── */
+.app-card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.05);transition:all .2s;border:2px solid transparent;cursor:pointer;position:relative}
+.app-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08);border-color:#4fc3f7}
+.app-card .app-icon{font-size:30px;margin-bottom:8px}
+.app-card .app-name{font-weight:700;font-size:14px;margin-bottom:3px}
+.app-card .app-desc{font-size:11px;color:#8492a6;margin-bottom:8px}
+.app-card .app-meta{display:flex;gap:12px;font-size:10px;color:#aaa}
+.app-card .app-meta b{color:#555}
+.app-card .app-status-dot{position:absolute;top:12px;right:12px;width:8px;height:8px;border-radius:50%}
+.app-card .app-status-dot.online{background:#4caf50}.app-card .app-status-dot.offline{background:#ccc}.app-card .app-status-dot.dev{background:#ff9800}
+
+/* ── USER ROW ── */
+.user-avatar-sm{width:28px;height:28px;border-radius:50%;background:#e0e0e0;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#555;margin-right:8px;flex-shrink:0}
+
+/* ── TABS (Config page) ── */
+.tab-bar{display:flex;gap:0;border-bottom:2px solid #e0e0e0;margin-bottom:14px}
+.tab-btn{padding:8px 18px;cursor:pointer;font-size:12px;font-weight:600;color:#8492a6;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none}
+.tab-btn.active{color:#111d2b;border-bottom-color:#4fc3f7}
+.tab-panel{display:none}.tab-panel.active{display:block}
+
+/* ── MISC ── */
+.hidden{display:none!important}
+.muted{color:#8492a6;font-size:11px}
+.clickable{cursor:pointer;color:#1565c0;font-weight:500}.clickable:hover{text-decoration:underline}
+.text-right{text-align:right}
+.text-center{text-align:center}
+.mt-0{margin-top:0}.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mb-8{margin-bottom:8px}
+.flex-between{display:flex;justify-content:space-between;align-items:center}
+
+/* ── IMPORT PROGRESS ── */
+.progress-bar{height:6px;background:#e0e0e0;border-radius:3px;overflow:hidden;margin-top:8px}
+.progress-bar .fill{height:100%;background:#4fc3f7;border-radius:3px;transition:width .4s}
+
+/* ── CONFIRM DIALOG ── */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:9999}
+.confirm-overlay.show{display:flex}
+.confirm-box{background:#fff;border-radius:12px;padding:24px;width:380px;max-width:90vw;box-shadow:0 12px 40px rgba(0,0,0,.15);text-align:center}
+.confirm-box .icon-warn{font-size:40px;margin-bottom:8px}
+.confirm-box p{font-size:13px;color:#555;margin-bottom:16px}
+.confirm-box .btn-group{justify-content:center}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ LOGIN ═══════════ -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="logo-icon">🏠</div>
+    <h1>Rural <span>Portal</span></h1>
+    <div class="sub">Quản trị Web App · v2.0</div>
+    <label>Mã nhân viên</label>
+    <input type="text" id="loginInput" placeholder="Nhập mã NV..." maxlength="20" autocomplete="off">
+    <div class="hint">VD: NV001, hoặc mã GĐV/QLKV</div>
+    <button onclick="doLogin()">🔐 Đăng nhập</button>
+    <div class="error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-icon">🏠</div>
+    <div><div class="logo">Rural <span>Portal</span></div><div class="sub">v2.0 · Quản trị hệ thống</div></div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section">Tổng quan</div>
+    <div class="nav-item active" data-page="dashboard" onclick="switchPage('dashboard')"><span class="icon">📊</span> Dashboard</div>
+    <div class="nav-section" style="margin-top:8px">Quản trị</div>
+    <div class="nav-item" data-page="apps" onclick="switchPage('apps')"><span class="icon">📱</span> Quản lý Apps <span class="badge-count" id="countApps">0</span></div>
+    <div class="nav-item" data-page="users" onclick="switchPage('users')"><span class="icon">👥</span> Quản lý Users <span class="badge-count" id="countUsers">0</span></div>
+    <div class="nav-item" data-page="roles" onclick="switchPage('roles')"><span class="icon">🔐</span> Phân quyền</div>
+    <div class="nav-section" style="margin-top:8px">Hệ thống</div>
+    <div class="nav-item" data-page="config" onclick="switchPage('config')"><span class="icon">⚙️</span> Cấu hình</div>
+    <div class="nav-item" data-page="logs" onclick="switchPage('logs')"><span class="icon">📋</span> Nhật ký</div>
+  </div>
+  <div class="sidebar-footer">
+    <div class="avatar" id="sidebarAvatar">?</div>
+    <div class="user-info"><b id="sidebarName">...</b><span id="sidebarRole">...</span></div>
+    <div class="logout" onclick="doLogout()" title="Đăng xuất">⏻</div>
+  </div>
+</div>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<div class="main" id="mainArea">
+  <div class="topbar">
+    <h1 id="pageTitle">📊 Dashboard</h1>
+    <div class="topbar-actions"><span id="clock">🕐</span></div>
+  </div>
+  <div class="content">
+
+    <!-- ── DASHBOARD ── -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-row" id="dashStats"></div>
+      <div class="card"><div class="card-header"><h3>📱 Web App Status</h3><button class="btn btn-outline btn-sm" onclick="switchPage('apps')">Quản lý Apps →</button></div><div class="grid-3" id="dashAppCards"></div></div>
+      <div class="card"><h3>🕐 Hoạt động gần đây</h3><div class="table-wrap"><table><thead><tr><th>Thời gian</th><th>User</th><th>App</th><th>Hành động</th><th>Kết quả</th></tr></thead><tbody id="dashActivity"></tbody></table></div></div>
+    </div>
+
+    <!-- ── APPS ── -->
+    <div class="page" id="page-apps">
+      <div class="card"><div class="card-header"><h3>📱 Danh sách Web App</h3><div class="btn-group"><button class="btn btn-outline btn-sm" onclick="importAppsFromGitHub()">🔄 Sync từ GitHub</button><button class="btn btn-primary btn-sm" onclick="showAppModal()">+ Thêm App</button></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Icon</th><th>Tên App</th><th>URL / Repo</th><th>Version</th><th>Sheet ID</th><th>GAS</th><th>Trạng thái</th><th>Active</th><th></th></tr></thead><tbody id="appsTable"></tbody></table></div></div>
+    </div>
+
+    <!-- ── USERS ── -->
+    <div class="page" id="page-users">
+      <div class="card"><div class="card-header"><h3>👥 Quản lý Users</h3><div class="search-bar"><input id="userSearch" placeholder="Tìm tên / mã NV / GĐV..." oninput="renderUsers()"><select id="userRoleFilter" onchange="renderUsers()"><option value="">Tất cả Role</option><option>Admin</option><option>GĐM</option><option>GĐV</option><option>QLKV</option></select><button class="btn btn-outline btn-sm" onclick="importUsersFromStorelist()">📥 Import từ Storelist</button><button class="btn btn-primary btn-sm" onclick="showUserModal()">+ Thêm User</button></div></div>
+      <div class="table-wrap"><table><thead><tr><th>User</th><th>Mã NV</th><th>Role</th><th>GĐV / QLKV</th><th>Apps được dùng</th><th>Trạng thái</th><th></th></tr></thead><tbody id="usersTable"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ── ROLES ── -->
+    <div class="page" id="page-roles">
+      <div class="card"><div class="card-header"><h3>🔐 Ma trận Phân quyền (Role × App)</h3><button class="btn btn-outline btn-sm" onclick="resetRoleDefaults()">↺ Về mặc định</button></div>
+      <div class="table-wrap"><table class="perm-matrix" id="rolesMatrix"></table></div>
+      </div>
+      <div class="card"><div class="card-header"><h3>👤 Phân quyền từng User</h3><div class="search-bar"><input placeholder="Tìm user..." id="permUserSearch" oninput="renderUserPerms()"></div></div>
+      <div class="table-wrap"><table><thead id="permAppHeaders"></thead><tbody id="userPermsTable"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ── CONFIG ── -->
+    <div class="page" id="page-config">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchConfigTab('sheets')">📊 Google Sheets</button>
+        <button class="tab-btn" onclick="switchConfigTab('github')">🐙 GitHub</button>
+        <button class="tab-btn" onclick="switchConfigTab('system')">🖥️ Hệ thống</button>
+      </div>
+      <div class="tab-panel active" id="tab-sheets">
+        <div class="card"><h3>Sheet ID — Dữ liệu gốc</h3>
+          <div class="form-row"><div class="form-group"><label>Storelist Sheet ID</label><input id="cfgStorelistId" placeholder="1fMmEm1GC9aei_3oeu2vcadPVsUM9ms9eVhm99d7pF8A"></div><div class="form-group"><label>Storelist GID</label><input id="cfgStorelistGid" placeholder="900581387"></div></div>
+          <div class="form-row"><div class="form-group"><label>Shared DB Sheet ID</label><input id="cfgSharedDbId" placeholder="1UMtB9MOxGOaZvxN5VAUGAS1bPaAL2tVVFEViGANd4Tk"></div><div class="form-group"><label>Users & Config Sheet ID</label><input id="cfgUsersSheetId" placeholder="Sheet quản lý Users + Phân quyền"></div></div>
+          <button class="btn btn-success btn-sm mt-8" onclick="saveSheetConfig()">💾 Lưu cấu hình Sheets</button>
+        </div>
+        <div class="card"><h3>🔗 Sheet mỗi App</h3><div class="table-wrap"><table><thead><tr><th>App</th><th>Sheet ID</th><th>GID chính</th><th>GAS URL</th></tr></thead><tbody id="configAppSheets"></tbody></table></div></div>
+      </div>
+      <div class="tab-panel" id="tab-github">
+        <div class="card"><div class="card-header"><h3>🐙 GitHub Configuration</h3><button class="btn btn-outline btn-sm" onclick="testGitHubConnection()">🔍 Test Connection</button></div>
+          <div class="form-row"><div class="form-group"><label>GitHub Org</label><input id="cfgGitHubOrg" placeholder="Ruralwcm"></div><div class="form-group"><label>Default Branch</label><input id="cfgGitHubBranch" placeholder="main"></div></div>
+          <div class="form-row"><div class="form-group"><label>GitHub Token (PAT)</label><input id="cfgGitHubToken" type="password" placeholder="ghp_..."></div><div class="form-group"><label>Pages Domain</label><input id="cfgPagesDomain" placeholder="ruralwcm.github.io"></div></div>
+          <button class="btn btn-success btn-sm mt-8" onclick="saveGitHubConfig()">💾 Lưu cấu hình GitHub</button>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-system">
+        <div class="card"><h3>🖥️ Cấu hình hệ thống</h3>
+          <div class="form-row"><div class="form-group"><label>Admin GAS URL</label><input id="cfgAdminGasUrl" placeholder="https://script.google.com/macros/s/.../exec"></div><div class="form-group"><label>Telegram Bot Token</label><input id="cfgBotToken" type="password" placeholder="••••••••"></div></div>
+          <div class="form-row"><div class="form-group"><label>Timezone</label><input id="cfgTimezone" value="Asia/Ho_Chi_Minh"></div><div class="form-group"><label>Language</label><input id="cfgLanguage" value="vi"></div></div>
+          <button class="btn btn-success btn-sm mt-8" onclick="saveSystemConfig()">💾 Lưu cấu hình hệ thống</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LOGS ── -->
+    <div class="page" id="page-logs">
+      <div class="card"><div class="card-header"><h3>📋 Nhật ký hoạt động</h3><div class="search-bar"><select id="logAppFilter" onchange="renderLogs()"><option value="">Tất cả Apps</option></select><input placeholder="Search..." id="logSearch" oninput="renderLogs()"><button class="btn btn-outline btn-xs" onclick="clearLogs()">🗑️ Clear</button></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Thời gian</th><th>User</th><th>App</th><th>Hành động</th><th>Chi tiết</th><th>Kết quả</th></tr></thead><tbody id="logsTable"></tbody></table></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════ MODALS ═══════════ -->
+<!-- App Modal -->
+<div class="modal-overlay" id="appModal"><div class="modal">
+  <h3 id="appModalTitle">➕ Thêm App mới</h3>
+  <div class="form-row"><div class="form-group"><label>Icon (emoji)</label><input id="appIcon" placeholder="📦"></div><div class="form-group"><label>Tên App</label><input id="appName" placeholder="VD: FC Ambient MOV"></div></div>
+  <div class="form-row"><div class="form-group"><label>App ID (slug)</label><input id="appId" placeholder="fc-ambient"></div><div class="form-group"><label>Version</label><input id="appVersion" placeholder="v1.0.0"></div></div>
+  <div class="form-group"><label>Mô tả</label><input id="appDesc" placeholder="Mô tả ngắn về app"></div>
+  <div class="form-row"><div class="form-group"><label>GitHub Repo</label><input id="appRepo" placeholder="Ruralwcm/repo-name"></div><div class="form-group"><label>Pages URL</label><input id="appUrl" placeholder="ruralwcm.github.io/repo-name/"></div></div>
+  <div class="form-row"><div class="form-group"><label>Sheet ID</label><input id="appSheet" placeholder="Sheet ID Google Sheets"></div><div class="form-group"><label>GAS URL</label><input id="appGasUrl" placeholder="GAS endpoint URL"></div></div>
+  <div class="form-group"><label>Trạng thái</label><select id="appStatus"><option value="active">🟢 Active</option><option value="dev">🟠 Đang phát triển</option><option value="inactive">🔴 Inactive</option></select></div>
+  <input type="hidden" id="appEditId">
+  <div class="modal-footer"><button class="btn btn-outline btn-sm" onclick="closeModal('appModal')">Đóng</button><button class="btn btn-success btn-sm" onclick="saveApp()">💾 Lưu</button></div>
+</div></div>
+
+<!-- User Modal -->
+<div class="modal-overlay" id="userModal"><div class="modal">
+  <h3 id="userModalTitle">➕ Thêm User mới</h3>
+  <div class="form-row"><div class="form-group"><label>Mã NV</label><input id="userMaNV" placeholder="NV001"></div><div class="form-group"><label>Họ tên</label><input id="userName" placeholder="Nguyễn Văn A"></div></div>
+  <div class="form-row"><div class="form-group"><label>Role</label><select id="userRole"><option>Admin</option><option>GĐM</option><option selected>GĐV</option><option>QLKV</option></select></div><div class="form-group"><label>GĐV / Nhóm</label><input id="userGdv" placeholder="VD: Son NM / GĐM MB"></div></div>
+  <div class="form-group"><label>Apps được phép dùng (cách nhau dấu phẩy, để trống = tất cả với Admin)</label><input id="userApps" placeholder="VD: CTKM,CheckCam,CSVC,TKMB,FC"></div>
+  <div class="form-group"><label>Trạng thái</label><select id="userStatus"><option value="true">🟢 Active</option><option value="false">🔴 Inactive</option></select></div>
+  <input type="hidden" id="userEditId">
+  <div class="modal-footer"><button class="btn btn-outline btn-sm" onclick="closeModal('userModal')">Đóng</button><button class="btn btn-success btn-sm" onclick="saveUser()">💾 Lưu</button></div>
+</div></div>
+
+<!-- Confirm Dialog -->
+<div class="confirm-overlay" id="confirmOverlay"><div class="confirm-box">
+  <div class="icon-warn">⚠️</div>
+  <p id="confirmMsg">Bạn có chắc muốn thực hiện hành động này?</p>
+  <div class="btn-group"><button class="btn btn-outline btn-sm" onclick="closeConfirm()">Hủy</button><button class="btn btn-danger btn-sm" id="confirmBtn" onclick="confirmAction()">Xác nhận</button></div>
+</div></div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+/* ══════════════════════════════════════
+   RURAL PORTAL v2.0 — DATA LAYER
+   ══════════════════════════════════════ */
+
+// ── Default data ──
+const DEFAULT_APPS = [
+  { id:'ctkm', name:'CTKM Rural', icon:'🏷️', desc:'Dashboard CTKM + Khảo sát nhận hàng', url:'ruralwcm.github.io/ctkm-rural/', repo:'Ruralwcm/ctkm-rural', version:'v2.34', sheet:'1fMmEm1GC9aei_3oeu2vcadPVsUM9ms9eVhm99d7pF8A', gasUrl:'✅', status:'active', records:88, users:25, lastUpdate:'09/10 08:30' },
+  { id:'checkcam', name:'CheckCam', icon:'📸', desc:'Check camera tuân thủ cửa hàng', url:'ruralwcm.github.io/checkcam/', repo:'Ruralwcm/checkcam', version:'v1.2.0', sheet:'1NKmzINqmfbnRMNKp8JFiCcUKi_SR-iozOQrrj58XDuE', gasUrl:'✅', status:'active', records:312, users:92, lastUpdate:'09/10 07:15' },
+  { id:'csvc', name:'Khảo sát CSVC', icon:'🏗️', desc:'Form khảo sát CSVC 34 hạng mục', url:'ruralwcm.github.io/khaosat-xaydung-setup/', repo:'Ruralwcm/khaosat-xaydung-setup', version:'v5.3', sheet:'1NKmzINqmfbnRMNKp8JFiCcUKi_SR-iozOQrrj58XDuE', gasUrl:'✅', status:'active', records:156, users:45, lastUpdate:'09/10 06:00' },
+  { id:'tkmb', name:'TKMB', icon:'📍', desc:'Tracking mặt bằng + Quy hoạch', url:'ruralwcm.github.io/tkmb/', repo:'Ruralwcm/tkmb', version:'v2.1', sheet:'1jac8uf8eeB57C-zZ85Lg_l-UwpPxOTPkcoQ2mywMZyw', gasUrl:'✅', status:'active', records:47, users:12, lastUpdate:'08/10 22:00' },
+  { id:'fc', name:'FC Hàng Hóa', icon:'📦', desc:'Field Check & Luân chuyển hàng', url:'ruralwcm.github.io/fc-hanghoa/', repo:'Ruralwcm/fc-hanghoa', version:'v1.3', sheet:'1UMtB9MOxGOaZvxN5VAUGAS1bPaAL2tVVFEViGANd4Tk', gasUrl:'⏳', status:'dev', records:0, users:8, lastUpdate:'09/10 13:00' },
+  { id:'chiphi', name:'Chi Phí Định Kỳ', icon:'💰', desc:'Form chi phí định kỳ cửa hàng', url:'—', repo:'Ruralwcm/...', version:'v1.0-draft', sheet:'—', gasUrl:'⏳', status:'dev', records:89, users:18, lastUpdate:'07/10 15:00' },
+];
+
+const DEFAULT_ROLES = [
+  { role:'Admin', dash:'✅', ctkm:'✅', checkcam:'✅', csvc:'✅', tkmb:'✅', fc:'✅', config:'✅', users:'✅', logs:'✅' },
+  { role:'GĐM',   dash:'✅', ctkm:'👁️', checkcam:'👁️', csvc:'👁️', tkmb:'✅', fc:'✅', config:'❌', users:'❌', logs:'👁️' },
+  { role:'GĐV',   dash:'👁️', ctkm:'👁️', checkcam:'👁️', csvc:'✅', tkmb:'✅', fc:'✅', config:'❌', users:'❌', logs:'❌' },
+  { role:'QLKV',  dash:'❌', ctkm:'👁️', checkcam:'✅', csvc:'✅', tkmb:'❌', fc:'❌', config:'❌', users:'❌', logs:'❌' },
+];
+
+const DEFAULT_USERS = [
+  { id:'admin01', name:'Trần Đăng Hảo', role:'Admin', gdv:'GĐM MB', apps:'all', active:true },
+  { id:'gdm01', name:'Đặng Trần Hảo', role:'GĐM', gdv:'GĐM MB', apps:'CTKM,CheckCam,CSVC,TKMB,FC', active:true },
+  { id:'gdv02', name:'Nguyễn Mạnh Sơn', role:'GĐV', gdv:'Sơn NM', apps:'CTKM,CheckCam,CSVC,TKMB,FC', active:true },
+  { id:'gdv03', name:'Tạ Quốc Huy', role:'GĐV', gdv:'Huy TQ', apps:'CTKM,CheckCam,CSVC,FC', active:true },
+  { id:'gdv04', name:'Phạm Minh Thu', role:'GĐV', gdv:'Thu PM', apps:'CheckCam,CSVC,FC', active:true },
+  { id:'gdv05', name:'Đặng Văn Dũng', role:'GĐV', gdv:'Dũng ĐV', apps:'CTKM,TKMB,FC', active:true },
+  { id:'gdv06', name:'Hồ Nam', role:'GĐV', gdv:'Nam H', apps:'CTKM,TKMB,FC,CheckCam', active:true },
+  { id:'gdv07', name:'Dương Tùng', role:'GĐV', gdv:'Tùng Dương', apps:'TKMB,FC', active:true },
+  { id:'s201', name:'Phạm Thị Hồng', role:'GĐM', gdv:'S2', apps:'Dashboard,CTKM', active:true },
+];
+
+// ── State ──
+let APPS = [];
+let USERS = [];
+let ROLES = [];
+let LOGS = [];
+let currentUser = null;
+let confirmCallback = null;
+
+// ── Init ──
+function initData() {
+  APPS = JSON.parse(localStorage.getItem('portal_apps')||'null') || structuredClone(DEFAULT_APPS);
+  USERS = JSON.parse(localStorage.getItem('portal_users')||'null') || structuredClone(DEFAULT_USERS);
+  ROLES = JSON.parse(localStorage.getItem('portal_roles')||'null') || structuredClone(DEFAULT_ROLES);
+  LOGS = JSON.parse(localStorage.getItem('portal_logs')||'[]');
+  ensureAdminUser();
+}
+function ensureAdminUser() {
+  // Guarantee at least 1 Admin so nobody gets locked out
+  if (!USERS.find(u=>u.role==='Admin'&&u.active)) {
+    USERS.unshift({ id:'admin01', name:'Trần Đăng Hảo', role:'Admin', gdv:'GĐM MB', apps:'all', active:true });
+    saveUsers();
+  }
+}
+function persist() { saveApps(); saveUsers(); saveRoles(); saveLogs(); updateCounts(); }
+function saveApps() { localStorage.setItem('portal_apps',JSON.stringify(APPS)); }
+function saveUsers(){ localStorage.setItem('portal_users',JSON.stringify(USERS)); }
+function saveRoles(){ localStorage.setItem('portal_roles',JSON.stringify(ROLES)); }
+function saveLogs() { if(LOGS.length>500)LOGS=LOGS.slice(0,500); localStorage.setItem('portal_logs',JSON.stringify(LOGS)); }
+function updateCounts() { $('countApps').textContent=APPS.length; $('countUsers').textContent=USERS.length; }
+
+function addLog(user,app,action,detail,status='✅') {
+  LOGS.unshift({ time:new Date().toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh',hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'}), user, app, action, detail, status });
+  saveLogs();
+}
+
+// ── Shortcuts ──
+function $(id){return document.getElementById(id);}
+function toast(m,t='info'){const e=$('toast');e.textContent=m;e.className='toast '+t;setTimeout(()=>e.classList.add('hidden'),2500);}
+function closeModal(id){$(id).classList.remove('show');}
+function showModal(id){$(id).classList.add('show');}
+function closeConfirm(){$('confirmOverlay').classList.remove('show');confirmCallback=null;}
+function askConfirm(msg,cb){$('confirmMsg').textContent=msg;$('confirmOverlay').classList.add('show');confirmCallback=cb;}
+function confirmAction(){if(confirmCallback)confirmCallback();closeConfirm();}
+
+/* ══════════════════════════════════════
+   AUTH
+   ══════════════════════════════════════ */
+
+function doLogin() {
+  const code = $('loginInput').value.trim();
+  $('loginError').textContent = '';
+  if (!code) { $('loginError').textContent = 'Vui lòng nhập mã NV'; return; }
+
+  // Match by id (Mã NV) — case-insensitive
+  let user = USERS.find(u => u.id.toLowerCase()===code.toLowerCase() && u.active);
+  // Fallback: fuzzy match by name
+  if (!user) user = USERS.find(u => u.name.toLowerCase().includes(code.toLowerCase()) && u.active);
+
+  if (!user) {
+    $('loginError').textContent = '❌ Mã NV không tồn tại hoặc đã bị khóa. Liên hệ Admin.';
+    return;
+  }
+
+  currentUser = user;
+  $('loginOverlay').classList.add('hidden');
+  $('sidebarAvatar').textContent = user.name.charAt(0).toUpperCase();
+  $('sidebarName').textContent = user.name;
+  $('sidebarRole').textContent = user.role;
+  addLog(user.name,'Portal','Login','Đăng nhập thành công');
+  updateClock();
+  renderAll();
+}
+
+function doLogout() {
+  if (currentUser) addLog(currentUser.name,'Portal','Logout','Đăng xuất');
+  currentUser = null;
+  $('loginOverlay').classList.remove('hidden');
+  $('loginInput').value = '';
+  $('loginInput').focus();
+}
+
+function canAccess(feature) {
+  if (!currentUser) return false;
+  const role = ROLES.find(r=>r.role===currentUser.role);
+  if (!role) return currentUser.role==='Admin';
+  return role[feature]==='✅';
+}
+
+function userAppList(user) {
+  if (!user.apps || user.apps==='all') return APPS.map(a=>a.id);
+  return user.apps.split(',').map(s=>s.trim().toLowerCase());
+}
+
+/* ══════════════════════════════════════
+   NAVIGATION
+   ══════════════════════════════════════ */
+
+function switchPage(page) {
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  const navItem = document.querySelector('[data-page="'+page+'"]');
+  if (navItem) navItem.classList.add('active');
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  $('page-'+page).classList.add('active');
+  const titles={dashboard:'📊 Dashboard',apps:'📱 Quản lý Apps',users:'👥 Quản lý Users',roles:'🔐 Phân quyền',config:'⚙️ Cấu hình hệ thống',logs:'📋 Nhật ký hoạt động'};
+  $('pageTitle').textContent=titles[page]||'';
+  if (page==='dashboard') renderDashboard();
+  if (page==='apps') renderApps();
+  if (page==='users') renderUsers();
+  if (page==='roles') { renderRolesMatrix(); renderUserPerms(); }
+  if (page==='config') renderConfig();
+  if (page==='logs') renderLogs();
+}
+
+function renderAll() {
+  updateCounts();
+  renderDashboard();
+  renderApps();
+  renderUsers();
+  renderRolesMatrix();
+  renderUserPerms();
+  renderConfig();
+  renderLogs();
+  renderLogFilter();
+}
+
+/* ══════════════════════════════════════
+   DASHBOARD
+   ══════════════════════════════════════ */
+
+function renderDashboard() {
+  const totalApps = APPS.length;
+  const activeApps = APPS.filter(a=>a.status==='active').length;
+  const totalUsers = USERS.filter(u=>u.active).length;
+  const todayLogs = LOGS.filter(l=>l.time.includes(new Date().toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh',day:'2-digit',month:'2-digit'}))).length;
+
+  $('dashStats').innerHTML = `
+    <div class="stat-card"><div class="stat-icon">📱</div><div class="stat-label">Tổng Apps</div><div class="stat-value">${totalApps}</div><div class="stat-change up">🟢 ${activeApps} active · 🟠 ${totalApps-activeApps} dev</div></div>
+    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">Users</div><div class="stat-value">${totalUsers}</div><div class="stat-change up">👤 ${USERS.filter(u=>u.role==='GĐV'&&u.active).length} GĐV · ${USERS.filter(u=>u.role==='QLKV'&&u.active).length} QLKV</div></div>
+    <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-label">Hoạt động hôm nay</div><div class="stat-value">${todayLogs}</div><div class="stat-change neutral">📋 Tổng log: ${LOGS.length}</div></div>
+    <div class="stat-card"><div class="stat-icon">🔐</div><div class="stat-label">Phiên hiện tại</div><div class="stat-value" style="font-size:20px">${currentUser?.name||'—'}</div><div class="stat-change up">${currentUser?.role||''} · ${currentUser?.gdv||''}</div></div>`;
+
+  $('dashAppCards').innerHTML = APPS.map(a=>`
+    <div class="app-card" onclick="window.open('https://${a.url}','_blank')">
+      <div class="app-status-dot ${a.status==='active'?'online':a.status==='dev'?'dev':'offline'}"></div>
+      <div class="app-icon">${a.icon}</div>
+      <div class="app-name">${a.name}</div>
+      <div class="app-desc">${a.desc}</div>
+      <div class="app-meta"><span>📊 <b>${a.records||0}</b></span><span>👤 <b>${a.users||0}</b></span><span>🕐 ${a.lastUpdate||'—'}</span></div>
+    </div>`).join('');
+
+  const recentLogs = LOGS.slice(0,8);
+  $('dashActivity').innerHTML = recentLogs.length ? recentLogs.map(l=>`<tr><td>${l.time}</td><td>${l.user}</td><td>${l.app}</td><td>${l.action}</td><td>${l.status} ${l.detail||''}</td></tr>`).join('') : '<tr class="empty-row"><td colspan="5">Chưa có hoạt động nào</td></tr>';
+}
+
+/* ══════════════════════════════════════
+   APPS MANAGEMENT
+   ══════════════════════════════════════ */
+
+function renderApps() {
+  $('appsTable').innerHTML = APPS.map(a=>`
+    <tr>
+      <td style="font-size:22px">${a.icon}</td>
+      <td><b>${a.name}</b><br><span class="muted">${a.desc}</span></td>
+      <td><span class="clickable" onclick="window.open('https://${a.url}','_blank')">${a.url}</span><br><span class="muted">${a.repo}</span></td>
+      <td><span class="badge ${a.status==='active'?'badge-active':a.status==='dev'?'badge-draft':'badge-inactive'}">${a.version}</span></td>
+      <td style="font-size:10px;max-width:120px;overflow:hidden;text-overflow:ellipsis">${a.sheet||'—'}</td>
+      <td>${a.gasUrl||'—'}</td>
+      <td><span class="badge ${a.status==='active'?'badge-active':a.status==='dev'?'badge-draft':'badge-inactive'}">${a.status==='active'?'🟢 Active':a.status==='dev'?'🟠 Dev':'🔴 Inactive'}</span></td>
+      <td><label class="toggle"><input type="checkbox" ${a.status==='active'?'checked':''} onchange="toggleApp('${a.id}',this.checked)"><span class="slider"></span></label></td>
+      <td><div class="btn-group"><button class="btn btn-outline btn-xs" onclick="editApp('${a.id}')">✏️</button><button class="btn btn-outline btn-xs" onclick="deleteApp('${a.id}')" style="color:#c62828">🗑️</button></div></td>
+    </tr>`).join('');
+  updateCounts();
+}
+
+function showAppModal(editId) {
+  $('appEditId').value = '';
+  $('appModalTitle').textContent = '➕ Thêm App mới';
+  $('appIcon').value='';$('appName').value='';$('appId').value='';$('appVersion').value='';$('appDesc').value='';$('appRepo').value='';$('appUrl').value='';$('appSheet').value='';$('appGasUrl').value='';$('appStatus').value='dev';
+  if (editId) {
+    const a = APPS.find(x=>x.id===editId);
+    if (a) {
+      $('appEditId').value = a.id;
+      $('appModalTitle').textContent = '✏️ Sửa App: '+a.name;
+      $('appIcon').value=a.icon;$('appName').value=a.name;$('appId').value=a.id;$('appVersion').value=a.version;$('appDesc').value=a.desc;$('appRepo').value=a.repo;$('appUrl').value=a.url;$('appSheet').value=a.sheet||'';$('appGasUrl').value=a.gasUrl||'';$('appStatus').value=a.status;
+    }
+  }
+  showModal('appModal');
+}
+
+function editApp(id) { showAppModal(id); }
+
+function saveApp() {
+  const editId = $('appEditId').value;
+  const data = {
+    id: $('appId').value.trim().toLowerCase().replace(/\s+/g,'-'),
+    name: $('appName').value.trim(),
+    icon: $('appIcon').value.trim()||'📦',
+    desc: $('appDesc').value.trim(),
+    url: $('appUrl').value.trim(),
+    repo: $('appRepo').value.trim(),
+    version: $('appVersion').value.trim()||'v1.0',
+    sheet: $('appSheet').value.trim(),
+    gasUrl: $('appGasUrl').value.trim()||'⏳',
+    status: $('appStatus').value,
+    records: 0, users: 0, lastUpdate: '—'
+  };
+  if (!data.id || !data.name) { toast('Vui lòng nhập App ID và Tên','error'); return; }
+
+  if (editId) {
+    const idx = APPS.findIndex(a=>a.id===editId);
+    if (idx>=0) { data.records=APPS[idx].records; data.users=APPS[idx].users; data.lastUpdate=APPS[idx].lastUpdate; APPS[idx]=data; }
+  } else {
+    if (APPS.find(a=>a.id===data.id)) { toast('App ID đã tồn tại!','error'); return; }
+    APPS.push(data);
+  }
+  closeModal('appModal');
+  saveApps();
+  renderApps();
+  renderDashboard();
+  renderConfig();
+  renderRolesMatrix();
+  addLog(currentUser?.name||'System','Portal',editId?'Update App':'Create App',`${data.name} (${data.version})`);
+  toast(editId?'✅ Đã cập nhật app!':'✅ Đã thêm app mới!','success');
+}
+
+function toggleApp(id,val) {
+  const a = APPS.find(x=>x.id===id);
+  if (a) { a.status = val?'active':'inactive'; saveApps(); renderApps(); renderDashboard();
+    addLog(currentUser?.name||'System','Portal','Toggle App',`${a.name} → ${val?'active':'inactive'}`); }
+}
+
+function deleteApp(id) {
+  const a = APPS.find(x=>x.id===id);
+  if (!a) return;
+  askConfirm(`Xóa app "${a.name}"? Dữ liệu app sẽ không bị mất, chỉ xóa khỏi danh sách quản lý.`,()=>{
+    APPS = APPS.filter(x=>x.id!==id);
+    saveApps(); renderApps(); renderDashboard(); renderConfig(); renderRolesMatrix();
+    addLog(currentUser?.name||'System','Portal','Delete App',a.name);
+    toast('🗑️ Đã xóa app: '+a.name,'info');
+  });
+}
+
+function importAppsFromGitHub() {
+  // Placeholder: will pull from GitHub org repos
+  toast('🔄 Đang sync từ GitHub... (tính năng sẽ hoàn thiện khi có GAS Backend)','info');
+  addLog(currentUser?.name||'System','Portal','Sync GitHub','Manual sync triggered');
+}
+
+/* ══════════════════════════════════════
+   USERS MANAGEMENT
+   ══════════════════════════════════════ */
+
+function renderUsers() {
+  const q = ($('userSearch').value||'').toLowerCase();
+  const rf = $('userRoleFilter').value;
+  let filtered = USERS;
+  if (rf) filtered = filtered.filter(u=>u.role===rf);
+  if (q) filtered = filtered.filter(u=>u.name.toLowerCase().includes(q)||u.id.toLowerCase().includes(q)||u.gdv.toLowerCase().includes(q));
+
+  $('usersTable').innerHTML = filtered.map(u=>`
+    <tr>
+      <td><span class="user-avatar-sm">${u.name.charAt(0).toUpperCase()}</span><b>${u.name}</b></td>
+      <td style="font-family:monospace">${u.id}</td>
+      <td><span class="badge badge-${u.role==='Admin'?'admin':u.role==='GĐM'?'gdm':u.role==='GĐV'?'gdv':'qlkv'}">${u.role}</span></td>
+      <td>${u.gdv||'—'}</td>
+      <td style="font-size:10px;max-width:150px">${u.apps==='all'?'<span class="badge badge-admin">Tất cả</span>':(u.apps||'—')}</td>
+      <td><span class="badge ${u.active?'badge-active':'badge-inactive'}">${u.active?'🟢 Active':'🔴 Inactive'}</span></td>
+      <td><div class="btn-group"><button class="btn btn-outline btn-xs" onclick="editUser('${u.id}')">✏️</button><button class="btn btn-outline btn-xs" onclick="deleteUser('${u.id}')" style="color:#c62828">🗑️</button></div></td>
+    </tr>`).join('');
+  updateCounts();
+}
+
+function showUserModal(editId) {
+  $('userEditId').value = '';
+  $('userModalTitle').textContent = '➕ Thêm User mới';
+  $('userMaNV').value='';$('userName').value='';$('userRole').value='GĐV';$('userGdv').value='';$('userApps').value='';$('userStatus').value='true';
+  if (editId) {
+    const u = USERS.find(x=>x.id===editId);
+    if (u) {
+      $('userEditId').value = u.id;
+      $('userModalTitle').textContent = '✏️ Sửa User: '+u.name;
+      $('userMaNV').value=u.id;$('userName').value=u.name;$('userRole').value=u.role;$('userGdv').value=u.gdv||'';$('userApps').value=u.apps==='all'?'':(u.apps||'');$('userStatus').value=String(u.active);
+    }
+  }
+  showModal('userModal');
+}
+
+function editUser(id) { showUserModal(id); }
+
+function saveUser() {
+  const editId = $('userEditId').value;
+  const id = $('userMaNV').value.trim();
+  const name = $('userName').value.trim();
+  const role = $('userRole').value;
+  const appsRaw = $('userApps').value.trim();
+
+  if (!id || !name) { toast('Vui lòng nhập Mã NV và Họ tên','error'); return; }
+
+  const data = {
+    id, name, role,
+    gdv: $('userGdv').value.trim(),
+    apps: role==='Admin'?'all':(appsRaw||APPS.map(a=>a.id).join(',')),
+    active: $('userStatus').value==='true'
+  };
+
+  if (editId) {
+    const idx = USERS.findIndex(u=>u.id===editId);
+    if (idx>=0) USERS[idx]=data;
+  } else {
+    if (USERS.find(u=>u.id===id)) { toast('Mã NV đã tồn tại!','error'); return; }
+    USERS.push(data);
+  }
+  closeModal('userModal');
+  saveUsers();
+  renderUsers();
+  renderDashboard();
+  renderUserPerms();
+  updateCounts();
+  addLog(currentUser?.name||'System','Portal',editId?'Update User':'Create User',`${name} (${role})`);
+  toast(editId?'✅ Đã cập nhật user!':'✅ Đã thêm user mới!','success');
+}
+
+function deleteUser(id) {
+  const u = USERS.find(x=>x.id===id);
+  if (!u) return;
+  if (u.id===currentUser?.id) { toast('❌ Không thể xóa chính mình!','error'); return; }
+  askConfirm(`Xóa user "${u.name}" (${u.role})?`,()=>{
+    USERS = USERS.filter(x=>x.id!==id);
+    saveUsers(); renderUsers(); renderDashboard(); renderUserPerms(); updateCounts();
+    addLog(currentUser?.name||'System','Portal','Delete User',u.name);
+    toast('🗑️ Đã xóa user: '+u.name,'info');
+  });
+}
+
+function importUsersFromStorelist() {
+  // Placeholder: will fetch from Storelist Google Sheet
+  toast('📥 Đang import từ Storelist... (cần GAS Backend để lấy data live)','info');
+  addLog(currentUser?.name||'System','Portal','Import Users','Triggered Storelist import');
+}
+
+/* ══════════════════════════════════════
+   ROLES & PERMISSIONS
+   ══════════════════════════════════════ */
+
+function getPermAppIds() {
+  // For role matrix: use generic app slots + specific
+  const specific = APPS.map(a=>a.id);
+  const generic = ['dash','config','users','logs'];
+  return { generic, specific, all: [...generic,...specific] };
+}
+
+function renderRolesMatrix() {
+  const { all } = getPermAppIds();
+  const headerLabels = { dash:'Dashboard', config:'Cấu hình', users:'Users', logs:'Logs' };
+
+  let html = '<thead><tr><th>Role</th>';
+  all.forEach(aid => { html += `<th>${headerLabels[aid]||APPS.find(a=>a.id===aid)?.name||aid}</th>`; });
+  html += '</tr></thead><tbody>';
+
+  ROLES.forEach(r => {
+    html += `<tr><td><b>${r.role}</b></td>`;
+    all.forEach(aid => {
+      const val = r[aid]||'❌';
+      html += `<td><span class="${val==='✅'?'perm-level-full':val==='👁️'?'perm-level-read':'perm-level-none'}">${val}</span></td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody>';
+  $('rolesMatrix').innerHTML = html;
+}
+
+function renderUserPerms() {
+  const q = ($('permUserSearch').value||'').toLowerCase();
+  let users = USERS;
+  if (q) users = users.filter(u=>u.name.toLowerCase().includes(q)||u.id.toLowerCase().includes(q));
+
+  const appIds = APPS.map(a=>a.id);
+
+  // Headers
+  $('permAppHeaders').innerHTML = '<tr><th>User</th><th>Role</th>'+appIds.map(id=>`<th>${APPS.find(a=>a.id===id)?.name||id}</th>`).join('')+'<th></th></tr>';
+
+  $('userPermsTable').innerHTML = users.map(u=>{
+    const uApps = userAppList(u);
+    let row = `<tr><td><b>${u.name}</b></td><td><span class="badge badge-${u.role==='Admin'?'admin':u.role==='GĐM'?'gdm':u.role==='GĐV'?'gdv':'qlkv'}">${u.role}</span></td>`;
+    appIds.forEach(aid => {
+      const has = uApps.includes(aid) || uApps.includes('all') || u.role==='Admin';
+      row += `<td>${has?'<span class="perm-level-full">✅</span>':'<span class="perm-level-none">❌</span>'}</td>`;
+    });
+    row += `<td><button class="btn btn-outline btn-xs" onclick="editUser('${u.id}')">✏️</button></td></tr>`;
+    return row;
+  }).join('');
+}
+
+function resetRoleDefaults() {
+  askConfirm('Đặt lại ma trận phân quyền về mặc định? Các tùy chỉnh sẽ bị mất.',()=>{
+    ROLES = structuredClone(DEFAULT_ROLES);
+    saveRoles(); renderRolesMatrix();
+    toast('✅ Đã reset phân quyền về mặc định','success');
+  });
+}
+
+/* ══════════════════════════════════════
+   CONFIG
+   ══════════════════════════════════════ */
+
+function switchConfigTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector(`[onclick="switchConfigTab('${tab}')"]`).classList.add('active');
+  $(`tab-${tab}`).classList.add('active');
+}
+
+function renderConfig() {
+  // Load saved config
+  const cfg = JSON.parse(localStorage.getItem('portal_config')||'{}');
+  $('cfgStorelistId').value = cfg.storelistId || '1fMmEm1GC9aei_3oeu2vcadPVsUM9ms9eVhm99d7pF8A';
+  $('cfgStorelistGid').value = cfg.storelistGid || '900581387';
+  $('cfgSharedDbId').value = cfg.sharedDbId || '1UMtB9MOxGOaZvxN5VAUGAS1bPaAL2tVVFEViGANd4Tk';
+  $('cfgUsersSheetId').value = cfg.usersSheetId || '';
+  $('cfgGitHubOrg').value = cfg.gitHubOrg || 'Ruralwcm';
+  $('cfgGitHubBranch').value = cfg.gitHubBranch || 'main';
+  $('cfgGitHubToken').value = cfg.gitHubToken || '';
+  $('cfgPagesDomain').value = cfg.pagesDomain || 'ruralwcm.github.io';
+  $('cfgAdminGasUrl').value = cfg.adminGasUrl || '';
+  $('cfgBotToken').value = cfg.botToken || '';
+  $('cfgTimezone').value = cfg.timezone || 'Asia/Ho_Chi_Minh';
+  $('cfgLanguage').value = cfg.language || 'vi';
+
+  // App-sheet table
+  $('configAppSheets').innerHTML = APPS.map(a=>`
+    <tr><td><b>${a.icon} ${a.name}</b></td>
+    <td><input value="${a.sheet||''}" size="20" style="font-size:10px" onchange="updateAppSheet('${a.id}','sheet',this.value)"></td>
+    <td><input value="${a.sheetGid||''}" size="8" style="font-size:10px" onchange="updateAppSheet('${a.id}','sheetGid',this.value)"></td>
+    <td><input value="${a.gasUrl==='✅'||a.gasUrl==='⏳'?'':a.gasUrl||''}" size="25" style="font-size:10px" placeholder="GAS URL" onchange="updateAppSheet('${a.id}','gasUrl',this.value)"></td></tr>`).join('');
+}
+
+function updateAppSheet(id,field,value) {
+  const a = APPS.find(x=>x.id===id);
+  if (a) { a[field]=value; saveApps(); }
+}
+
+function saveSheetConfig() {
+  const cfg = JSON.parse(localStorage.getItem('portal_config')||'{}');
+  cfg.storelistId=$('cfgStorelistId').value; cfg.storelistGid=$('cfgStorelistGid').value;
+  cfg.sharedDbId=$('cfgSharedDbId').value; cfg.usersSheetId=$('cfgUsersSheetId').value;
+  localStorage.setItem('portal_config',JSON.stringify(cfg));
+  addLog(currentUser?.name||'System','Portal','Config','Luu cau hinh Sheets');
+  toast('✅ Đã lưu cấu hình Sheets!','success');
+}
+
+function saveGitHubConfig() {
+  const cfg = JSON.parse(localStorage.getItem('portal_config')||'{}');
+  cfg.gitHubOrg=$('cfgGitHubOrg').value; cfg.gitHubBranch=$('cfgGitHubBranch').value;
+  cfg.gitHubToken=$('cfgGitHubToken').value; cfg.pagesDomain=$('cfgPagesDomain').value;
+  localStorage.setItem('portal_config',JSON.stringify(cfg));
+  addLog(currentUser?.name||'System','Portal','Config','Luu cau hinh GitHub');
+  toast('✅ Đã lưu cấu hình GitHub!','success');
+}
+
+function saveSystemConfig() {
+  const cfg = JSON.parse(localStorage.getItem('portal_config')||'{}');
+  cfg.adminGasUrl=$('cfgAdminGasUrl').value; cfg.botToken=$('cfgBotToken').value;
+  cfg.timezone=$('cfgTimezone').value; cfg.language=$('cfgLanguage').value;
+  localStorage.setItem('portal_config',JSON.stringify(cfg));
+  addLog(currentUser?.name||'System','Portal','Config','Luu cau hinh he thong');
+  toast('✅ Đã lưu cấu hình hệ thống!','success');
+}
+
+function testGitHubConnection() {
+  const org = $('cfgGitHubOrg').value||'Ruralwcm';
+  fetch(`https://api.github.com/orgs/${org}/repos?per_page=5`)
+    .then(r=>r.json()).then(data=>{
+      if (Array.isArray(data)) toast(`✅ Kết nối GitHub OK — tìm thấy ${data.length}+ repos trong org ${org}`,'success');
+      else toast('❌ Không kết nối được GitHub. Kiểm tra token hoặc org.','error');
+    }).catch(()=>toast('❌ Lỗi kết nối GitHub','error'));
+}
+
+/* ══════════════════════════════════════
+   LOGS
+   ══════════════════════════════════════ */
+
+function renderLogFilter() {
+  const apps = [...new Set(LOGS.map(l=>l.app))];
+  $('logAppFilter').innerHTML = '<option value="">Tất cả Apps</option>'+apps.map(a=>`<option>${a}</option>`).join('');
+}
+
+function renderLogs() {
+  const af = $('logAppFilter').value;
+  const q = ($('logSearch').value||'').toLowerCase();
+  let filtered = LOGS;
+  if (af) filtered = filtered.filter(l=>l.app===af);
+  if (q) filtered = filtered.filter(l=>l.user.toLowerCase().includes(q)||l.action.toLowerCase().includes(q)||(l.detail||'').toLowerCase().includes(q));
+
+  $('logsTable').innerHTML = filtered.length ? filtered.map(l=>`<tr><td>${l.time}</td><td>${l.user}</td><td>${l.app}</td><td>${l.action}</td><td>${l.detail||''}</td><td>${l.status}</td></tr>`).join('') : '<tr class="empty-row"><td colspan="6">Chưa có log nào</td></tr>';
+  renderLogFilter();
+}
+
+function clearLogs() {
+  askConfirm('Xóa toàn bộ nhật ký hoạt động? Hành động này không thể hoàn tác.',()=>{
+    LOGS = [];
+    saveLogs(); renderLogs(); renderDashboard();
+    toast('🗑️ Đã xóa toàn bộ log','info');
+  });
+}
+
+/* ══════════════════════════════════════
+   CLOCK & MISC
+   ══════════════════════════════════════ */
+
+function updateClock() {
+  const now = new Date();
+  $('clock').textContent = '🕐 '+now.toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh',hour:'2-digit',minute:'2-digit',second:'2-digit',day:'2-digit',month:'2-digit',year:'numeric'});
+}
+
+// ── Keyboard shortcuts ──
+document.addEventListener('keydown',e=>{
+  if (e.key==='Enter' && $('loginOverlay') && !$('loginOverlay').classList.contains('hidden')) doLogin();
+  if (e.key==='Escape') { closeModal('appModal'); closeModal('userModal'); closeConfirm(); }
+});
+
+// ── Boot ──
+initData();
+setInterval(updateClock, 1000);
+
+// Auto-login if remembered (dev convenience)
+const savedUser = localStorage.getItem('portal_currentUser');
+if (savedUser) {
+  const u = JSON.parse(savedUser);
+  const found = USERS.find(x=>x.id===u.id);
+  if (found && found.active) {
+    currentUser = found;
+    $('loginOverlay').classList.add('hidden');
+    $('sidebarAvatar').textContent = found.name.charAt(0).toUpperCase();
+    $('sidebarName').textContent = found.name;
+    $('sidebarRole').textContent = found.role;
+    updateClock();
+    renderAll();
+  }
+}
+</script>
+</body>
+</html>
