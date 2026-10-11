@@ -437,6 +437,7 @@ function doLogin() {
   }
 
   currentUser = user;
+  localStorage.setItem('portal_user', JSON.stringify({id:user.id,name:user.name,role:user.role,gdv:user.gdv||'',vung:user.vung||'',ts:Date.now()}));
   $('loginOverlay').classList.add('hidden');
   $('sidebarAvatar').textContent = user.name.charAt(0).toUpperCase();
   $('sidebarName').textContent = user.name;
@@ -449,6 +450,7 @@ function doLogin() {
 function doLogout() {
   if (currentUser) addLog(currentUser.name,'Portal','Logout','Đăng xuất');
   currentUser = null;
+  localStorage.removeItem('portal_user');
   $('loginOverlay').classList.remove('hidden');
   $('loginInput').value = '';
   $('loginInput').focus();
