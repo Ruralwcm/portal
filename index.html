@@ -71,7 +71,7 @@ body{font-family:'Be Vietnam Pro',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
 .stat-card .stat-label{font-size:11px;color:#8492a6;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
 .stat-card .stat-value{font-size:28px;font-weight:800;color:#d71920}
 .stat-card .stat-change{font-size:11px;margin-top:4px}
-.stat-card .stat-change.up{color:#2e7d32}.stat-card .stat-change.down{color:#e53935}.stat-card .stat-change.neutral{color:#8492a6}
+.stat-card .stat-change.up{color:#1a3c6e}.stat-card .stat-change.down{color:#e53935}.stat-card .stat-change.neutral{color:#8492a6}
 
 /* ── GRID ── */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -81,7 +81,7 @@ body{font-family:'Be Vietnam Pro',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
 /* ── BUTTONS ── */
 .btn{padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
 .btn-primary{background:#d71920;color:#fff}.btn-primary:hover{background:#1a3c6e}
-.btn-success{background:#2e7d32;color:#fff}.btn-success:hover{background:#1b5e20}
+.btn-success{background:#1a3c6e;color:#fff}.btn-success:hover{background:#1a3c6e}
 .btn-danger{background:#c62828;color:#fff}.btn-danger:hover{background:#b71c1c}
 .btn-outline{background:#fff;color:#d71920;border:1px solid #ccc}.btn-outline:hover{background:#f5f5f5}
 .btn-sm{padding:5px 10px;font-size:11px}.btn-xs{padding:3px 8px;font-size:10px}
@@ -97,13 +97,13 @@ tr:hover td{background:#f7f9fa}
 
 /* ── BADGES ── */
 .badge{font-size:10px;padding:3px 9px;border-radius:10px;font-weight:600;display:inline-block}
-.badge-active{background:#e8f5e9;color:#2e7d32}
+.badge-active{background:#e8f0fe;color:#1a3c6e}
 .badge-inactive{background:#f5f5f5;color:#999}
-.badge-draft{background:#fff3e0;color:#ef6c00}
+.badge-draft{background:#fef9c3;color:#ef6c00}
 .badge-admin{background:#e3f2fd;color:#d71920}
-.badge-gdm{background:#fff3e0;color:#ef6c00}
-.badge-gdv{background:#e8f5e9;color:#2e7d32}
-.badge-qlkv{background:#f3e5f5;color:#7b1fa2}
+.badge-gdm{background:#fef9c3;color:#ef6c00}
+.badge-gdv{background:#e8f0fe;color:#1a3c6e}
+.badge-qlkv{background:#e8f0fe;color:#1a3c6e}
 
 /* ── FORMS ── */
 .form-group{margin-bottom:12px}
@@ -118,7 +118,7 @@ tr:hover td{background:#f7f9fa}
 .toggle input{display:none}
 .toggle .slider{position:absolute;inset:0;background:#ccc;border-radius:23px;cursor:pointer;transition:.2s}
 .toggle .slider::before{content:'';position:absolute;width:17px;height:17px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s}
-.toggle input:checked+.slider{background:#4caf50}
+.toggle input:checked+.slider{background:#1a3c6e}
 .toggle input:checked+.slider::before{transform:translateX(19px)}
 
 /* ── MODAL ── */
@@ -131,7 +131,7 @@ tr:hover td{background:#f7f9fa}
 
 /* ── TOAST ── */
 .toast{position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:8px;color:#fff;font-size:12px;font-weight:600;z-index:9999;animation:slideUp .25s;box-shadow:0 4px 16px rgba(0,0,0,.15)}
-.toast.success{background:#2e7d32}.toast.error{background:#c62828}.toast.info{background:#d71920}
+.toast.success{background:#1a3c6e}.toast.error{background:#c62828}.toast.info{background:#d71920}
 @keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── SEARCH BAR ── */
@@ -143,7 +143,7 @@ tr:hover td{background:#f7f9fa}
 /* ── PERMISSION MATRIX ── */
 .perm-matrix td{text-align:center;font-size:16px}
 .perm-matrix td select{padding:4px 6px;border:1px solid #ddd;border-radius:4px;font-size:11px}
-.perm-level-full{color:#2e7d32;font-weight:700}.perm-level-read{color:#d71920}.perm-level-none{color:#ccc}
+.perm-level-full{color:#1a3c6e;font-weight:700}.perm-level-read{color:#d71920}.perm-level-none{color:#ccc}
 
 /* ── APP CARD (Dashboard) ── */
 .app-card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.05);transition:all .2s;border:2px solid transparent;cursor:pointer;position:relative}
@@ -154,7 +154,7 @@ tr:hover td{background:#f7f9fa}
 .app-card .app-meta{display:flex;gap:12px;font-size:10px;color:#aaa}
 .app-card .app-meta b{color:#555}
 .app-card .app-status-dot{position:absolute;top:12px;right:12px;width:8px;height:8px;border-radius:50%}
-.app-card .app-status-dot.online{background:#4caf50}.app-card .app-status-dot.offline{background:#ccc}.app-card .app-status-dot.dev{background:#ff9800}
+.app-card .app-status-dot.online{background:#1a3c6e}.app-card .app-status-dot.offline{background:#ccc}.app-card .app-status-dot.dev{background:#ff9800}
 
 /* ── USER ROW ── */
 .user-avatar-sm{width:28px;height:28px;border-radius:50%;background:#e0e4e8;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#555;margin-right:8px;flex-shrink:0}
@@ -199,7 +199,7 @@ tr:hover td{background:#f7f9fa}
 </head>
 <body>
 
-<!-- ════════��══ LOGIN ═══════════ -->
+<!-- ═══════�����══ LOGIN ═══════════ -->
 <div class="login-overlay" id="loginOverlay">
   <div class="login-box">
     <div class="logo-icon">🏠</div>
@@ -540,7 +540,7 @@ function renderDashboard() {
   $('dashActivity').innerHTML = recentLogs.length ? recentLogs.map(l=>`<tr><td>${l.time}</td><td>${l.user}</td><td>${l.app}</td><td>${l.action}</td><td>${l.status} ${l.detail||''}</td></tr>`).join('') : '<tr class="empty-row"><td colspan="5">Chưa có hoạt động nào</td></tr>';
 }
 
-/* ══════════════════════════════════════
+/* ═════════════════════════════════���════
    APPS MANAGEMENT
    ══════════════════════════════════════ */
 
