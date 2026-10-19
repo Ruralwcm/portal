@@ -10,36 +10,36 @@
 body{font-family:'Be Vietnam Pro',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f4f6f8;color:#1a1a1a;display:flex;height:100vh;overflow:hidden}
 
 /* ── LOGIN ── */
-.login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#0a3d38 0%,#0b4a44 50%,#0f5f57 100%);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#1a3c6e 0%,#1a3c6e 50%,#d71920 100%);display:flex;align-items:center;justify-content:center;z-index:9999}
 .login-overlay.hidden{display:none}
 .login-box{background:#fff;border-radius:16px;padding:40px 36px;width:400px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center}
 .login-box .logo-icon{font-size:48px;margin-bottom:8px}
-.login-box h1{font-size:22px;font-weight:800;color:#0f5f57;margin-bottom:4px}
-.login-box h1 span{color:#148f7d}
+.login-box h1{font-size:22px;font-weight:800;color:#d71920;margin-bottom:4px}
+.login-box h1 span{color:#1a3c6e}
 .login-box .sub{font-size:12px;color:#8492a6;margin-bottom:24px}
 .login-box label{display:block;text-align:left;font-size:12px;font-weight:600;color:#555;margin-bottom:4px}
 .login-box input{width:100%;padding:12px 14px;border:2px solid #e0e4e8;border-radius:8px;font-size:15px;transition:border .2s;text-align:center;letter-spacing:2px}
-.login-box input:focus{border-color:#148f7d;outline:none;box-shadow:0 0 0 3px rgba(15,95,87,.12)}
+.login-box input:focus{border-color:#1a3c6e;outline:none;box-shadow:0 0 0 3px rgba(26,60,110,.12)}
 .login-box .hint{font-size:10px;color:#aaa;margin-top:4px}
-.login-box button{margin-top:16px;width:100%;padding:12px;background:#0f5f57;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
-.login-box button:hover{background:#148f7d}
+.login-box button{margin-top:16px;width:100%;padding:12px;background:#d71920;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
+.login-box button:hover{background:#1a3c6e}
 .login-box .error{color:#e53935;font-size:11px;margin-top:8px;min-height:16px}
 
 /* ── SIDEBAR ── */
-.sidebar{width:240px;background:#0f5f57;color:#c0ccda;display:flex;flex-direction:column;flex-shrink:0;transition:width .2s}
+.sidebar{width:240px;background:#d71920;color:#c0ccda;display:flex;flex-direction:column;flex-shrink:0;transition:width .2s}
 .sidebar-header{padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:10px}
 .sidebar-header .logo-icon{font-size:26px}
-.sidebar-header .logo{font-size:15px;font-weight:800;color:#fff}.sidebar-header .logo span{color:#148f7d}
+.sidebar-header .logo{font-size:15px;font-weight:800;color:#fff}.sidebar-header .logo span{color:#1a3c6e}
 .sidebar-header .sub{font-size:9px;color:#5a6d80;margin-top:1px}
 .sidebar-nav{flex:1;padding:8px 0;overflow-y:auto}
 .nav-section{padding:8px 16px 4px;font-size:9px;text-transform:uppercase;color:#4a5e73;letter-spacing:1.2px;font-weight:600}
 .nav-item{padding:9px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;transition:all .12s;border-left:3px solid transparent;color:#8492a6;margin:1px 0}
 .nav-item:hover{background:rgba(255,255,255,.04);color:#c0ccda}
-.nav-item.active{background:rgba(15,95,87,.08);color:#148f7d;border-left-color:#148f7d;font-weight:600}
+.nav-item.active{background:rgba(26,60,110,.08);color:#1a3c6e;border-left-color:#1a3c6e;font-weight:600}
 .nav-item .icon{width:20px;text-align:center;font-size:14px;flex-shrink:0}
 .nav-item .badge-count{margin-left:auto;background:rgba(255,255,255,.1);color:#8492a6;font-size:10px;padding:1px 7px;border-radius:10px;min-width:22px;text-align:center}
 .sidebar-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:10px;font-size:11px}
-.sidebar-footer .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#148f7d,#0f5f57);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.sidebar-footer .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1a3c6e,#d71920);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
 .sidebar-footer .user-info b{display:block;color:#e0e4e8;font-size:12px}
 .sidebar-footer .user-info span{font-size:10px;color:#5a6d80}
 .sidebar-footer .logout{cursor:pointer;margin-left:auto;color:#5a6d80;font-size:11px;padding:4px 8px;border-radius:4px;transition:all .15s}
@@ -58,7 +58,7 @@ body{font-family:'Be Vietnam Pro',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
 
 /* ── CARDS ── */
 .card{background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04);margin-bottom:14px}
-.card h3{font-size:14px;font-weight:700;color:#0f5f57;margin-bottom:12px}
+.card h3{font-size:14px;font-weight:700;color:#d71920;margin-bottom:12px}
 .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .card-header h3{margin-bottom:0}
 .card-subtitle{font-size:11px;color:#8492a6;margin-bottom:12px}
@@ -69,7 +69,7 @@ body{font-family:'Be Vietnam Pro',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
 .stat-card{background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04);position:relative;overflow:hidden}
 .stat-card .stat-icon{position:absolute;right:14px;top:14px;font-size:28px;opacity:.15}
 .stat-card .stat-label{font-size:11px;color:#8492a6;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
-.stat-card .stat-value{font-size:28px;font-weight:800;color:#0f5f57}
+.stat-card .stat-value{font-size:28px;font-weight:800;color:#d71920}
 .stat-card .stat-change{font-size:11px;margin-top:4px}
 .stat-card .stat-change.up{color:#2e7d32}.stat-card .stat-change.down{color:#e53935}.stat-card .stat-change.neutral{color:#8492a6}
 
@@ -80,10 +80,10 @@ body{font-family:'Be Vietnam Pro',-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
 
 /* ── BUTTONS ── */
 .btn{padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
-.btn-primary{background:#0f5f57;color:#fff}.btn-primary:hover{background:#148f7d}
+.btn-primary{background:#d71920;color:#fff}.btn-primary:hover{background:#1a3c6e}
 .btn-success{background:#2e7d32;color:#fff}.btn-success:hover{background:#1b5e20}
 .btn-danger{background:#c62828;color:#fff}.btn-danger:hover{background:#b71c1c}
-.btn-outline{background:#fff;color:#0f5f57;border:1px solid #ccc}.btn-outline:hover{background:#f5f5f5}
+.btn-outline{background:#fff;color:#d71920;border:1px solid #ccc}.btn-outline:hover{background:#f5f5f5}
 .btn-sm{padding:5px 10px;font-size:11px}.btn-xs{padding:3px 8px;font-size:10px}
 .btn-group{display:flex;gap:6px}
 
@@ -100,7 +100,7 @@ tr:hover td{background:#f7f9fa}
 .badge-active{background:#e8f5e9;color:#2e7d32}
 .badge-inactive{background:#f5f5f5;color:#999}
 .badge-draft{background:#fff3e0;color:#ef6c00}
-.badge-admin{background:#e3f2fd;color:#0f5f57}
+.badge-admin{background:#e3f2fd;color:#d71920}
 .badge-gdm{background:#fff3e0;color:#ef6c00}
 .badge-gdv{background:#e8f5e9;color:#2e7d32}
 .badge-qlkv{background:#f3e5f5;color:#7b1fa2}
@@ -109,7 +109,7 @@ tr:hover td{background:#f7f9fa}
 .form-group{margin-bottom:12px}
 .form-group label{display:block;font-size:11px;font-weight:600;color:#555;margin-bottom:3px;text-transform:uppercase;letter-spacing:.3px}
 .form-group input,.form-group select,.form-group textarea{width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px;transition:border .15s}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#148f7d;outline:none;box-shadow:0 0 0 3px rgba(15,95,87,.08)}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#1a3c6e;outline:none;box-shadow:0 0 0 3px rgba(26,60,110,.08)}
 .form-group textarea{resize:vertical;min-height:60px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
@@ -126,28 +126,28 @@ tr:hover td{background:#f7f9fa}
 .modal-overlay.show{display:flex}
 .modal{background:#fff;border-radius:12px;padding:24px;width:560px;max-width:92vw;max-height:85vh;overflow-y:auto;box-shadow:0 12px 40px rgba(0,0,0,.15);animation:modalIn .2s}
 @keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(-8px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.modal h3{font-size:16px;font-weight:700;margin-bottom:16px;color:#0f5f57}
+.modal h3{font-size:16px;font-weight:700;margin-bottom:16px;color:#d71920}
 .modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid #eee}
 
 /* ── TOAST ── */
 .toast{position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:8px;color:#fff;font-size:12px;font-weight:600;z-index:9999;animation:slideUp .25s;box-shadow:0 4px 16px rgba(0,0,0,.15)}
-.toast.success{background:#2e7d32}.toast.error{background:#c62828}.toast.info{background:#0f5f57}
+.toast.success{background:#2e7d32}.toast.error{background:#c62828}.toast.info{background:#d71920}
 @keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── SEARCH BAR ── */
 .search-bar{display:flex;gap:8px;align-items:center}
 .search-bar input{padding:7px 12px;border:1px solid #ddd;border-radius:6px;font-size:12px;width:200px;transition:all .15s}
-.search-bar input:focus{border-color:#148f7d;outline:none;box-shadow:0 0 0 3px rgba(15,95,87,.06)}
+.search-bar input:focus{border-color:#1a3c6e;outline:none;box-shadow:0 0 0 3px rgba(26,60,110,.06)}
 .search-bar select{padding:7px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px}
 
 /* ── PERMISSION MATRIX ── */
 .perm-matrix td{text-align:center;font-size:16px}
 .perm-matrix td select{padding:4px 6px;border:1px solid #ddd;border-radius:4px;font-size:11px}
-.perm-level-full{color:#2e7d32;font-weight:700}.perm-level-read{color:#0f5f57}.perm-level-none{color:#ccc}
+.perm-level-full{color:#2e7d32;font-weight:700}.perm-level-read{color:#d71920}.perm-level-none{color:#ccc}
 
 /* ── APP CARD (Dashboard) ── */
 .app-card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.05);transition:all .2s;border:2px solid transparent;cursor:pointer;position:relative}
-.app-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08);border-color:#148f7d}
+.app-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08);border-color:#1a3c6e}
 .app-card .app-icon{font-size:30px;margin-bottom:8px}
 .app-card .app-name{font-weight:700;font-size:14px;margin-bottom:3px}
 .app-card .app-desc{font-size:11px;color:#8492a6;margin-bottom:8px}
@@ -162,13 +162,13 @@ tr:hover td{background:#f7f9fa}
 /* ── TABS (Config page) ── */
 .tab-bar{display:flex;gap:0;border-bottom:2px solid #e0e4e8;margin-bottom:14px}
 .tab-btn{padding:8px 18px;cursor:pointer;font-size:12px;font-weight:600;color:#8492a6;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none}
-.tab-btn.active{color:#0f5f57;border-bottom-color:#148f7d}
+.tab-btn.active{color:#d71920;border-bottom-color:#1a3c6e}
 .tab-panel{display:none}.tab-panel.active{display:block}
 
 /* ── MISC ── */
 .hidden{display:none!important}
 .muted{color:#8492a6;font-size:11px}
-.clickable{cursor:pointer;color:#0f5f57;font-weight:500}.clickable:hover{text-decoration:underline}
+.clickable{cursor:pointer;color:#d71920;font-weight:500}.clickable:hover{text-decoration:underline}
 .text-right{text-align:right}
 .text-center{text-align:center}
 .mt-0{margin-top:0}.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mb-8{margin-bottom:8px}
@@ -176,7 +176,7 @@ tr:hover td{background:#f7f9fa}
 
 /* ── IMPORT PROGRESS ── */
 .progress-bar{height:6px;background:#e0e4e8;border-radius:3px;overflow:hidden;margin-top:8px}
-.progress-bar .fill{height:100%;background:#148f7d;border-radius:3px;transition:width .4s}
+.progress-bar .fill{height:100%;background:#1a3c6e;border-radius:3px;transition:width .4s}
 
 /* ── CONFIRM DIALOG ── */
 .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:9999}
@@ -199,7 +199,7 @@ tr:hover td{background:#f7f9fa}
 </head>
 <body>
 
-<!-- ═══════════ LOGIN ═══════════ -->
+<!-- ════════��══ LOGIN ═══════════ -->
 <div class="login-overlay" id="loginOverlay">
   <div class="login-box">
     <div class="logo-icon">🏠</div>
@@ -358,7 +358,7 @@ tr:hover td{background:#f7f9fa}
 // ── Default data ──
 const DEFAULT_APPS = [
   { id:'ctkm', name:'CTKM Rural', icon:'🏷️', desc:'Dashboard CTKM + Khảo sát nhận hàng', url:'ruralwcm.github.io/ctkm-rural/', repo:'Ruralwcm/ctkm-rural', version:'v2.34', sheet:'1fMmEm1GC9aei_3oeu2vcadPVsUM9ms9eVhm99d7pF8A', gasUrl:'✅', status:'active', records:88, users:25, lastUpdate:'09/10 08:30' },
-  { id:'checkcam', name:'CheckCam', icon:'📸', desc:'Check camera tuân thủ cửa hàng', url:'ruralwcm.github.io/checkcam/', repo:'Ruralwcm/checkcam', version:'v1.2.0', sheet:'1NKmzINqmfbnRMNKp8JFiCcUKi_SR-iozOQrrj58XDuE', gasUrl:'✅', status:'active', records:312, users:92, lastUpdate:'09/10 07:15' },
+  { id:'checkcam', name:'CheckCam', icon:'📸', desc:'Check camera tuân th��� cửa hàng', url:'ruralwcm.github.io/checkcam/', repo:'Ruralwcm/checkcam', version:'v1.2.0', sheet:'1NKmzINqmfbnRMNKp8JFiCcUKi_SR-iozOQrrj58XDuE', gasUrl:'✅', status:'active', records:312, users:92, lastUpdate:'09/10 07:15' },
   { id:'csvc', name:'Khảo sát CSVC', icon:'🏗️', desc:'Form khảo sát CSVC 34 hạng mục', url:'ruralwcm.github.io/khaosat-xaydung-setup/', repo:'Ruralwcm/khaosat-xaydung-setup', version:'v5.3', sheet:'1NKmzINqmfbnRMNKp8JFiCcUKi_SR-iozOQrrj58XDuE', gasUrl:'✅', status:'active', records:156, users:45, lastUpdate:'09/10 06:00' },
   { id:'tkmb', name:'TKMB', icon:'📍', desc:'Tracking mặt bằng + Quy hoạch', url:'ruralwcm.github.io/tkmb/', repo:'Ruralwcm/tkmb', version:'v2.1', sheet:'1jac8uf8eeB57C-zZ85Lg_l-UwpPxOTPkcoQ2mywMZyw', gasUrl:'✅', status:'active', records:47, users:12, lastUpdate:'08/10 22:00' },
   { id:'fc', name:'FC Hàng Hóa', icon:'📦', desc:'Field Check & Luân chuyển hàng', url:'ruralwcm.github.io/fc-hanghoa/', repo:'Ruralwcm/fc-hanghoa', version:'v1.3', sheet:'1UMtB9MOxGOaZvxN5VAUGAS1bPaAL2tVVFEViGANd4Tk', gasUrl:'⏳', status:'dev', records:0, users:8, lastUpdate:'09/10 13:00' },
@@ -430,7 +430,7 @@ function confirmAction(){if(confirmCallback)confirmCallback();closeConfirm();}
 
 /* ══════════════════════════════════════
    AUTH
-   ══════════════════════════════════════ */
+   ══════════════��═══════════════════════ */
 
 function doLogin() {
   const code = $('loginInput').value.trim();
@@ -523,7 +523,7 @@ function renderDashboard() {
 
   $('dashStats').innerHTML = `
     <div class="stat-card"><div class="stat-icon">📱</div><div class="stat-label">Tổng Apps</div><div class="stat-value">${totalApps}</div><div class="stat-change up">🟢 ${activeApps} active · 🟠 ${totalApps-activeApps} dev</div></div>
-    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">Users</div><div class="stat-value">${totalUsers}</div><div class="stat-change up">👤 ${USERS.filter(u=>u.role==='GĐV'&&u.active).length} GĐV · ${USERS.filter(u=>u.role==='QLKV'&&u.active).length} QLKV</div></div>
+    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">Users</div><div class="stat-value">${totalUsers}</div><div class="stat-change up">���� ${USERS.filter(u=>u.role==='GĐV'&&u.active).length} GĐV · ${USERS.filter(u=>u.role==='QLKV'&&u.active).length} QLKV</div></div>
     <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-label">Hoạt động hôm nay</div><div class="stat-value">${todayLogs}</div><div class="stat-change neutral">📋 Tổng log: ${LOGS.length}</div></div>
     <div class="stat-card"><div class="stat-icon">🔐</div><div class="stat-label">Phiên hiện tại</div><div class="stat-value" style="font-size:20px">${currentUser?.name||'—'}</div><div class="stat-change up">${currentUser?.role||''} · ${currentUser?.gdv||''}</div></div>`;
 
