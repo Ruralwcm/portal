@@ -155,6 +155,11 @@ tr:hover td{background:#f7f9fa}
 .app-card .app-meta b{color:#555}
 .app-card .app-status-dot{position:absolute;top:12px;right:12px;width:8px;height:8px;border-radius:50%}
 .app-card .app-status-dot.online{background:#4caf50}.app-card .app-status-dot.offline{background:#ccc}.app-card .app-status-dot.dev{background:#ff9800}
+/* ── GROUP SECTIONS ── */
+.group-section{margin-bottom:18px}
+.group-header{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#1a3c6e;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e0e4e8}
+.group-header .group-count{background:#1a3c6e;color:#fff;font-size:10px;padding:1px 8px;border-radius:10px;font-weight:600}
+.group-section .grid-3{margin-bottom:0}
 
 /* ── USER ROW ── */
 .user-avatar-sm{width:28px;height:28px;border-radius:50%;background:#e0e4e8;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#555;margin-right:8px;flex-shrink:0}
@@ -204,7 +209,7 @@ tr:hover td{background:#f7f9fa}
   <div class="login-box">
     <div class="logo-icon">🏠</div>
     <h1>Rural <span>Portal</span></h1>
-    <div class="sub">Quản trị Web App · v5.0</div>
+    <div class="sub">Quản trị Web App · v6.0</div>
     <label>Mã nhân viên</label>
     <input type="text" id="loginInput" placeholder="Nhập mã NV..." maxlength="20" autocomplete="off">
     <div class="hint">VD: NV001, hoặc mã GĐV/QLKV</div>
@@ -217,7 +222,7 @@ tr:hover td{background:#f7f9fa}
 <div class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <div class="logo-icon">🏠</div>
-    <div><div class="logo">Rural <span>Portal</span> <span style="font-size:9px;background:rgba(255,193,7,.2);color:#ffc107;padding:2px 6px;border-radius:4px;font-weight:700;vertical-align:middle">v5.0</span></div><div class="sub">Quản trị hệ thống</div></div>
+    <div><div class="logo">Rural <span>Portal</span> <span style="font-size:9px;background:rgba(255,193,7,.2);color:#ffc107;padding:2px 6px;border-radius:4px;font-weight:700;vertical-align:middle">v6.0</span></div><div class="sub">Quản trị hệ thống</div></div>
   </div>
   <div class="sidebar-nav">
     <div class="nav-section">Tổng quan</div>
@@ -241,7 +246,7 @@ tr:hover td{background:#f7f9fa}
 <div class="main" id="mainArea">
   <div class="topbar">
     <h1 id="pageTitle">📊 Dashboard</h1>
-    <div class="topbar-actions"><span style="background:rgba(255,255,255,.2);padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;margin-right:8px">v5.0</span><span id="clock">🕐</span></div>
+    <div class="topbar-actions"><span style="background:rgba(255,255,255,.2);padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;margin-right:8px">v6.0</span><span id="clock">🕐</span></div>
   </div>
   <div class="content">
 
@@ -254,8 +259,8 @@ tr:hover td{background:#f7f9fa}
 
     <!-- ── APPS ── -->
     <div class="page" id="page-apps">
-      <div class="card"><div class="card-header"><h3>📱 Danh sách Web App</h3><div class="btn-group"><button class="btn btn-outline btn-sm" onclick="importAppsFromGitHub()">🔄 Sync từ GitHub</button><button class="btn btn-primary btn-sm" onclick="showAppModal()">+ Thêm App</button></div></div>
-      <div class="table-wrap"><table><thead><tr><th>Icon</th><th>Tên App</th><th>URL / Repo</th><th>Version</th><th>Sheet ID</th><th>GAS</th><th>Trạng thái</th><th>Active</th><th></th></tr></thead><tbody id="appsTable"></tbody></table></div></div>
+      <div class="card"><div class="card-header"><h3>📱 Danh sách Web App</h3><div class="btn-group"><select id="appGroupFilter" onchange="renderApps()" style="padding:6px 8px;border:1px solid #ddd;border-radius:6px;font-size:12px;background:#fff"><option value="">Tất cả nhóm</option><option value="Sale">💰 Sale</option><option value="Setup & Mở mới">🏪 Setup & Mở mới</option><option value="Hành chính & nhân sự">👥 Hành chính & nhân sự</option></select><button class="btn btn-outline btn-sm" onclick="importAppsFromGitHub()">🔄 Sync từ GitHub</button><button class="btn btn-primary btn-sm" onclick="showAppModal()">+ Thêm App</button></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Icon</th><th>Tên App</th><th>URL / Repo</th><th>Nhóm</th><th>Version</th><th>Sheet ID</th><th>GAS</th><th>Trạng thái</th><th>Active</th><th></th></tr></thead><tbody id="appsTable"></tbody></table></div></div>
     </div>
 
     <!-- ── USERS ── -->
@@ -325,6 +330,7 @@ tr:hover td{background:#f7f9fa}
   <div class="form-group"><label>Mô tả</label><input id="appDesc" placeholder="Mô tả ngắn về app"></div>
   <div class="form-row"><div class="form-group"><label>GitHub Repo</label><input id="appRepo" placeholder="Ruralwcm/repo-name"></div><div class="form-group"><label>Pages URL</label><input id="appUrl" placeholder="ruralwcm.github.io/repo-name/"></div></div>
   <div class="form-row"><div class="form-group"><label>Sheet ID</label><input id="appSheet" placeholder="Sheet ID Google Sheets"></div><div class="form-group"><label>GAS URL</label><input id="appGasUrl" placeholder="GAS endpoint URL"></div></div>
+  <div class="form-group"><label>Nhóm</label><select id="appGroup"><option>Sale</option><option>Setup & Mở mới</option><option>Hành chính & nhân sự</option></select></div>
   <div class="form-group"><label>Trạng thái</label><select id="appStatus"><option value="active">🟢 Active</option><option value="dev">🟠 Đang phát triển</option><option value="inactive">🔴 Inactive</option></select></div>
   <input type="hidden" id="appEditId">
   <div class="modal-footer"><button class="btn btn-outline btn-sm" onclick="closeModal('appModal')">Đóng</button><button class="btn btn-success btn-sm" onclick="saveApp()">💾 Lưu</button></div>
@@ -357,33 +363,33 @@ tr:hover td{background:#f7f9fa}
 
 // ── Default data ──
 const DEFAULT_APPS = [
-  { id:'portal', name:'Portal Quản Trị', icon:'🖥️', desc:'Cổng quản trị tập trung Web App Rural', url:'ruralwcm.github.io/portal/', repo:'Ruralwcm/portal', version:'v5.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'ctkm-rural', name:'CTKM Rural', icon:'🏷️', desc:'Dashboard CTKM + Khảo sát nhận hàng', url:'ruralwcm.github.io/ctkm-rural/', repo:'Ruralwcm/ctkm-rural', version:'v2.34', sheet:'1fMmEm1GC9aei_3oeu2vcadPVsUM9ms9eVhm99d7pF8A', gasUrl:'✅', status:'active', records:88, users:25, lastUpdate:'09/10 08:30' },
-  { id:'checkcam', name:'CheckCam', icon:'📸', desc:'Check camera tuân thủ cửa hàng', url:'ruralwcm.github.io/checkcam/', repo:'Ruralwcm/checkcam', version:'v1.2.0', sheet:'1NKmzINqmfbnRMNKp8JFiCcUKi_SR-iozOQrrj58XDuE', gasUrl:'✅', status:'active', records:312, users:92, lastUpdate:'09/10 07:15' },
-  { id:'khaosat-xaydung-setup', name:'Khảo sát CSVC', icon:'🏗️', desc:'Form khảo sát CSVC 34 hạng mục', url:'ruralwcm.github.io/khaosat-xaydung-setup/', repo:'Ruralwcm/khaosat-xaydung-setup', version:'v5.3', sheet:'1NKmzINqmfbnRMNKp8JFiCcUKi_SR-iozOQrrj58XDuE', gasUrl:'✅', status:'active', records:156, users:45, lastUpdate:'09/10 06:00' },
-  { id:'tkmb', name:'TKMB', icon:'📍', desc:'Tracking mặt bằng + Quy hoạch', url:'ruralwcm.github.io/tkmb/', repo:'Ruralwcm/tkmb', version:'v2.40', sheet:'1jac8uf8eeB57C-zZ85Lg_l-UwpPxOTPkcoQ2mywMZyw', gasUrl:'✅', status:'active', records:47, users:12, lastUpdate:'17/10 22:00' },
-  { id:'fc-hanghoa', name:'FC Hàng Hóa', icon:'📦', desc:'Field Check & Luân chuyển hàng', url:'ruralwcm.github.io/fc-hanghoa/', repo:'Ruralwcm/fc-hanghoa', version:'v1.3', sheet:'1UMtB9MOxGOaZvxN5VAUGAS1bPaAL2tVVFEViGANd4Tk', gasUrl:'⏳', status:'dev', records:0, users:8, lastUpdate:'09/10 13:00' },
-  { id:'chi-phi-dinh-ky', name:'Chi Phí Định Kỳ', icon:'💰', desc:'Form chi phí định kỳ cửa hàng', url:'ruralwcm.github.io/chi-phi-dinh-ky/', repo:'Ruralwcm/chi-phi-dinh-ky', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'dev', records:89, users:18, lastUpdate:'07/10 15:00' },
-  { id:'tkmb-field', name:'TKMB Field', icon:'🗺️', desc:'Scan QH & Tiếp nhận MB (NV/Chuyên viên)', url:'ruralwcm.github.io/tkmb-field/', repo:'Ruralwcm/tkmb-field', version:'v1.0', sheet:'1jac8uf8eeB57C-zZ85Lg_l-UwpPxOTPkcoQ2mywMZyw', gasUrl:'✅', status:'active', records:0, users:0, lastUpdate:'19/10' },
-  { id:'tkmb-dashboard', name:'TKMB Dashboard', icon:'📊', desc:'Dashboard TKMB by HaoDT', url:'ruralwcm.github.io/tkmb-dashboard/', repo:'Ruralwcm/tkmb-dashboard', version:'v1.0', sheet:'1jac8uf8eeB57C-zZ85Lg_l-UwpPxOTPkcoQ2mywMZyw', gasUrl:'✅', status:'active', records:0, users:0, lastUpdate:'19/10' },
-  { id:'scan-qh', name:'Scan Điểm QH', icon:'🔍', desc:'Scan điểm QH — Khảo sát thực địa', url:'ruralwcm.github.io/scan-qh/', repo:'Ruralwcm/scan-qh', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'nso', name:'NSO Miền Bắc', icon:'🏪', desc:'NSO Miền Bắc Web App', url:'ruralwcm.github.io/nso/', repo:'Ruralwcm/nso', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'checkstore', name:'CheckStore', icon:'✅', desc:'Tiến độ Check Store hàng tháng', url:'ruralwcm.github.io/checkstore/', repo:'Ruralwcm/checkstore', version:'v4', sheet:'1NKmzINqmfbnRMNKp8JFiCcUKi_SR-iozOQrrj58XDuE', gasUrl:'✅', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'kstt', name:'KSTT', icon:'📋', desc:'Kiểm Soát Thực Tế — Báo cáo & duyệt', url:'ruralwcm.github.io/kstt/', repo:'Ruralwcm/kstt', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'bcha-kstt', name:'BCHA-KSTT', icon:'🖼️', desc:'Báo cáo hình ảnh & Kiểm soát thực tế', url:'ruralwcm.github.io/bcha-kstt/', repo:'Ruralwcm/bcha-kstt', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'km-rural', name:'KM Rural Dashboard', icon:'📈', desc:'Key Promotion Win Rural Dashboard', url:'ruralwcm.github.io/km-rural/', repo:'Ruralwcm/km-rural', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'mch3-slc', name:'MCH3 S&L&C', icon:'🔬', desc:'MCH3 S&L&C Analysis Dashboard', url:'ruralwcm.github.io/mch3-slc/', repo:'Ruralwcm/mch3-slc', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'ctp', name:'CTP', icon:'✈️', desc:'Quản lý Công tác phí — Khai báo & Phê duyệt', url:'ruralwcm.github.io/ctp/', repo:'Ruralwcm/ctp', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'ctp-manager', name:'CTP Manager', icon:'🛫', desc:'Khai báo · Valid · Phê duyệt công tác phí', url:'ruralwcm.github.io/ctp-manager/', repo:'Ruralwcm/ctp-manager', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'khtt-zalo', name:'KHTT Zalo', icon:'💬', desc:'Form cập nhật KHTT Zalo', url:'ruralwcm.github.io/khtt-zalo/', repo:'Ruralwcm/khtt-zalo', version:'v1.0', sheet:'1fMmEm1GC9aei_3oeu2vcadPVsUM9ms9eVhm99d7pF8A', gasUrl:'✅', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'thukhay', name:'Thu Khay', icon:'🧾', desc:'Thu Khay — HCV Rural Web App', url:'ruralwcm.github.io/thukhay/', repo:'Ruralwcm/thukhay', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'thongkedulieu', name:'Thống Kê Dữ Liệu', icon:'📉', desc:'Thống kê dữ liệu tổng hợp', url:'ruralwcm.github.io/thongkedulieu/', repo:'Ruralwcm/thongkedulieu', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'nhansu-khaosat', name:'Khảo Sát Nhân Sự', icon:'👥', desc:'Khảo sát Tình Trạng Nhân Sự Rural', url:'ruralwcm.github.io/nhansu-khaosat/', repo:'Ruralwcm/nhansu-khaosat', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'tuyen-dung-btb', name:'Tuyển Dụng BTB', icon:'🎯', desc:'Form Tuyển Dụng Bắc Trung Bộ', url:'ruralwcm.github.io/tuyen-dung-btb/', repo:'Ruralwcm/tuyen-dung-btb', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'tuyen-dung-dbsh', name:'Tuyển Dụng ĐBSH', icon:'🏢', desc:'Form Tuyển Dụng Đồng Bằng Sông Hồng', url:'ruralwcm.github.io/tuyen-dung-dbsh/', repo:'Ruralwcm/tuyen-dung-dbsh', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'rural-forms', name:'Rural Forms', icon:'📝', desc:'Tạo Form với Cross Link GĐV/QLKV/CH', url:'ruralwcm.github.io/rural-forms/', repo:'Ruralwcm/rural-forms', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
-  { id:'ra-soat-doi-thu', name:'Rà Soát Đối Thủ', icon:'🛡️', desc:'Rà soát đối thủ WinMart+ Rural', url:'ruralwcm.github.io/ra-soat-doi-thu/', repo:'Ruralwcm/ra-soat-doi-thu', version:'v1.0', sheet:'1UMtB9MOxGOaZvxN5VAUGAS1bPaAL2tVVFEViGANd4Tk', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'19/10' },
-  { id:'pog', name:'POG', icon:'📐', desc:'Planogram Management', url:'ruralwcm.github.io/pog/', repo:'Ruralwcm/pog', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'portal', group:'Hành chính & nhân sự', name:'Portal Quản Trị', icon:'🖥️', desc:'Cổng quản trị tập trung Web App Rural', url:'ruralwcm.github.io/portal/', repo:'Ruralwcm/portal', version:'v6.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'ctkm-rural', group:'Sale', name:'CTKM Rural', icon:'🏷️', desc:'Dashboard CTKM + Khảo sát nhận hàng', url:'ruralwcm.github.io/ctkm-rural/', repo:'Ruralwcm/ctkm-rural', version:'v2.34', sheet:'1fMmEm1GC9aei_3oeu2vcadPVsUM9ms9eVhm99d7pF8A', gasUrl:'✅', status:'active', records:88, users:25, lastUpdate:'09/10 08:30' },
+  { id:'checkcam', group:'Setup & Mở mới', name:'CheckCam', icon:'📸', desc:'Check camera tuân thủ cửa hàng', url:'ruralwcm.github.io/checkcam/', repo:'Ruralwcm/checkcam', version:'v1.2.0', sheet:'1NKmzINqmfbnRMNKp8JFiCcUKi_SR-iozOQrrj58XDuE', gasUrl:'✅', status:'active', records:312, users:92, lastUpdate:'09/10 07:15' },
+  { id:'khaosat-xaydung-setup', group:'Setup & Mở mới', name:'Khảo sát CSVC', icon:'🏗️', desc:'Form khảo sát CSVC 34 hạng mục', url:'ruralwcm.github.io/khaosat-xaydung-setup/', repo:'Ruralwcm/khaosat-xaydung-setup', version:'v5.3', sheet:'1NKmzINqmfbnRMNKp8JFiCcUKi_SR-iozOQrrj58XDuE', gasUrl:'✅', status:'active', records:156, users:45, lastUpdate:'09/10 06:00' },
+  { id:'tkmb', group:'Setup & Mở mới', name:'TKMB', icon:'📍', desc:'Tracking mặt bằng + Quy hoạch', url:'ruralwcm.github.io/tkmb/', repo:'Ruralwcm/tkmb', version:'v2.40', sheet:'1jac8uf8eeB57C-zZ85Lg_l-UwpPxOTPkcoQ2mywMZyw', gasUrl:'✅', status:'active', records:47, users:12, lastUpdate:'17/10 22:00' },
+  { id:'fc-hanghoa', group:'Sale', name:'FC Hàng Hóa', icon:'📦', desc:'Field Check & Luân chuyển hàng', url:'ruralwcm.github.io/fc-hanghoa/', repo:'Ruralwcm/fc-hanghoa', version:'v1.3', sheet:'1UMtB9MOxGOaZvxN5VAUGAS1bPaAL2tVVFEViGANd4Tk', gasUrl:'⏳', status:'dev', records:0, users:8, lastUpdate:'09/10 13:00' },
+  { id:'chi-phi-dinh-ky', group:'Hành chính & nhân sự', name:'Chi Phí Định Kỳ', icon:'💰', desc:'Form chi phí định kỳ cửa hàng', url:'ruralwcm.github.io/chi-phi-dinh-ky/', repo:'Ruralwcm/chi-phi-dinh-ky', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'dev', records:89, users:18, lastUpdate:'07/10 15:00' },
+  { id:'tkmb-field', group:'Setup & Mở mới', name:'TKMB Field', icon:'🗺️', desc:'Scan QH & Tiếp nhận MB (NV/Chuyên viên)', url:'ruralwcm.github.io/tkmb-field/', repo:'Ruralwcm/tkmb-field', version:'v1.0', sheet:'1jac8uf8eeB57C-zZ85Lg_l-UwpPxOTPkcoQ2mywMZyw', gasUrl:'✅', status:'active', records:0, users:0, lastUpdate:'19/10' },
+  { id:'tkmb-dashboard', group:'Setup & Mở mới', name:'TKMB Dashboard', icon:'📊', desc:'Dashboard TKMB by HaoDT', url:'ruralwcm.github.io/tkmb-dashboard/', repo:'Ruralwcm/tkmb-dashboard', version:'v1.0', sheet:'1jac8uf8eeB57C-zZ85Lg_l-UwpPxOTPkcoQ2mywMZyw', gasUrl:'✅', status:'active', records:0, users:0, lastUpdate:'19/10' },
+  { id:'scan-qh', group:'Setup & Mở mới', name:'Scan Điểm QH', icon:'🔍', desc:'Scan điểm QH — Khảo sát thực địa', url:'ruralwcm.github.io/scan-qh/', repo:'Ruralwcm/scan-qh', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'nso', group:'Setup & Mở mới', name:'NSO Miền Bắc', icon:'🏪', desc:'NSO Miền Bắc Web App', url:'ruralwcm.github.io/nso/', repo:'Ruralwcm/nso', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'checkstore', group:'Setup & Mở mới', name:'CheckStore', icon:'✅', desc:'Tiến độ Check Store hàng tháng', url:'ruralwcm.github.io/checkstore/', repo:'Ruralwcm/checkstore', version:'v4', sheet:'1NKmzINqmfbnRMNKp8JFiCcUKi_SR-iozOQrrj58XDuE', gasUrl:'✅', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'kstt', group:'Setup & Mở mới', name:'KSTT', icon:'📋', desc:'Kiểm Soát Thực Tế — Báo cáo & duyệt', url:'ruralwcm.github.io/kstt/', repo:'Ruralwcm/kstt', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'bcha-kstt', group:'Setup & Mở mới', name:'BCHA-KSTT', icon:'🖼️', desc:'Báo cáo hình ảnh & Kiểm soát thực tế', url:'ruralwcm.github.io/bcha-kstt/', repo:'Ruralwcm/bcha-kstt', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'km-rural', group:'Sale', name:'KM Rural Dashboard', icon:'📈', desc:'Key Promotion Win Rural Dashboard', url:'ruralwcm.github.io/km-rural/', repo:'Ruralwcm/km-rural', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'mch3-slc', group:'Sale', name:'MCH3 S&L&C', icon:'🔬', desc:'MCH3 S&L&C Analysis Dashboard', url:'ruralwcm.github.io/mch3-slc/', repo:'Ruralwcm/mch3-slc', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'ctp', group:'Hành chính & nhân sự', name:'CTP', icon:'✈️', desc:'Quản lý Công tác phí — Khai báo & Phê duyệt', url:'ruralwcm.github.io/ctp/', repo:'Ruralwcm/ctp', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'ctp-manager', group:'Hành chính & nhân sự', name:'CTP Manager', icon:'🛫', desc:'Khai báo · Valid · Phê duyệt công tác phí', url:'ruralwcm.github.io/ctp-manager/', repo:'Ruralwcm/ctp-manager', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'khtt-zalo', group:'Sale', name:'KHTT Zalo', icon:'💬', desc:'Form cập nhật KHTT Zalo', url:'ruralwcm.github.io/khtt-zalo/', repo:'Ruralwcm/khtt-zalo', version:'v1.0', sheet:'1fMmEm1GC9aei_3oeu2vcadPVsUM9ms9eVhm99d7pF8A', gasUrl:'✅', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'thukhay', group:'Sale', name:'Thu Khay', icon:'🧾', desc:'Thu Khay — HCV Rural Web App', url:'ruralwcm.github.io/thukhay/', repo:'Ruralwcm/thukhay', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'thongkedulieu', group:'Sale', name:'Thống Kê Dữ Liệu', icon:'📉', desc:'Thống kê dữ liệu tổng hợp', url:'ruralwcm.github.io/thongkedulieu/', repo:'Ruralwcm/thongkedulieu', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'nhansu-khaosat', group:'Hành chính & nhân sự', name:'Khảo Sát Nhân Sự', icon:'👥', desc:'Khảo sát Tình Trạng Nhân Sự Rural', url:'ruralwcm.github.io/nhansu-khaosat/', repo:'Ruralwcm/nhansu-khaosat', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'tuyen-dung-btb', group:'Hành chính & nhân sự', name:'Tuyển Dụng BTB', icon:'🎯', desc:'Form Tuyển Dụng Bắc Trung Bộ', url:'ruralwcm.github.io/tuyen-dung-btb/', repo:'Ruralwcm/tuyen-dung-btb', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'tuyen-dung-dbsh', group:'Hành chính & nhân sự', name:'Tuyển Dụng ĐBSH', icon:'🏢', desc:'Form Tuyển Dụng Đồng Bằng Sông Hồng', url:'ruralwcm.github.io/tuyen-dung-dbsh/', repo:'Ruralwcm/tuyen-dung-dbsh', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'rural-forms', group:'Hành chính & nhân sự', name:'Rural Forms', icon:'📝', desc:'Tạo Form với Cross Link GĐV/QLKV/CH', url:'ruralwcm.github.io/rural-forms/', repo:'Ruralwcm/rural-forms', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'ra-soat-doi-thu', group:'Sale', name:'Rà Soát Đối Thủ', icon:'🛡️', desc:'Rà soát đối thủ WinMart+ Rural', url:'ruralwcm.github.io/ra-soat-doi-thu/', repo:'Ruralwcm/ra-soat-doi-thu', version:'v1.0', sheet:'1UMtB9MOxGOaZvxN5VAUGAS1bPaAL2tVVFEViGANd4Tk', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'19/10' },
+  { id:'pog', group:'Sale', name:'POG', icon:'📐', desc:'Planogram Management', url:'ruralwcm.github.io/pog/', repo:'Ruralwcm/pog', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
 ];
 
 const DEFAULT_ROLES = [
@@ -536,6 +542,20 @@ function renderAll() {
    DASHBOARD
    ══════════════════════════════════════ */
 
+const APP_GROUPS = ['Sale','Setup & Mở mới','Hành chính & nhân sự'];
+
+function guessGroup(name) {
+  if (['ctkm','km-rural','mch3','thongkedulieu','fc-hanghoa','thukhay','khtt','ra-soat-doi-thu','pog'].some(k=>name.startsWith(k))) return 'Sale';
+  if (['tkmb','scan-qh','nso','checkstore','checkcam','khaosat','kstt','bcha'].some(k=>name.startsWith(k))) return 'Setup & Mở mới';
+  if (['ctp','chi-phi','nhansu','tuyen-dung','rural-forms','portal'].some(k=>name.startsWith(k))) return 'Hành chính & nhân sự';
+  return 'Setup & Mở mới';
+}
+
+function groupBadgeClass(g) {
+  const map = {'Sale':'badge-admin','Setup & Mở mới':'badge-gdv','Hành chính & nhân sự':'badge-draft'};
+  return map[g] || 'badge-inactive';
+}
+
 function renderDashboard() {
   const totalApps = APPS.length;
   const activeApps = APPS.filter(a=>a.status==='active').length;
@@ -548,14 +568,22 @@ function renderDashboard() {
     <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-label">Hoạt động hôm nay</div><div class="stat-value">${todayLogs}</div><div class="stat-change neutral">📋 Tổng log: ${LOGS.length}</div></div>
     <div class="stat-card"><div class="stat-icon">🔐</div><div class="stat-label">Phiên hiện tại</div><div class="stat-value" style="font-size:20px">${currentUser?.name||'—'}</div><div class="stat-change up">${currentUser?.role||''} · ${currentUser?.gdv||''}</div></div>`;
 
-  $('dashAppCards').innerHTML = APPS.map(a=>`
+  const appCard = a=>`
     <div class="app-card" onclick="window.open('https://${a.url}','_blank')">
       <div class="app-status-dot ${a.status==='active'?'online':a.status==='dev'?'dev':'offline'}"></div>
       <div class="app-icon">${a.icon}</div>
       <div class="app-name">${a.name}</div>
       <div class="app-desc">${a.desc}</div>
       <div class="app-meta"><span>📊 <b>${a.records||0}</b></span><span>👤 <b>${a.users||0}</b></span><span>🕐 ${a.lastUpdate||'—'}</span></div>
-    </div>`).join('');
+    </div>`;
+  const grouped = APP_GROUPS.map(g => {
+    const items = APPS.filter(a=>a.group===g);
+    if (!items.length) return '';
+    return '<div class="group-section"><div class="group-header">'+g+' <span class="group-count">'+items.length+'</span></div><div class="grid-3">'+items.map(appCard).join('')+'</div></div>';
+  }).join('');
+  const others = APPS.filter(a=>!a.group || !APP_GROUPS.includes(a.group));
+  const othersHTML = others.length ? '<div class="group-section"><div class="group-header">Khác <span class="group-count">'+others.length+'</span></div><div class="grid-3">'+others.map(appCard).join('')+'</div></div>' : '';
+  $('dashAppCards').innerHTML = grouped + othersHTML;
 
   const recentLogs = LOGS.slice(0,8);
   $('dashActivity').innerHTML = recentLogs.length ? recentLogs.map(l=>`<tr><td>${l.time}</td><td>${l.user}</td><td>${l.app}</td><td>${l.action}</td><td>${l.status} ${l.detail||''}</td></tr>`).join('') : '<tr class="empty-row"><td colspan="5">Chưa có hoạt động nào</td></tr>';
@@ -566,11 +594,15 @@ function renderDashboard() {
    ══════════════════════════════════════ */
 
 function renderApps() {
-  $('appsTable').innerHTML = APPS.map(a=>`
+  const gf = $('appGroupFilter')?.value || '';
+  let list = APPS;
+  if (gf) list = list.filter(a => a.group === gf);
+  $('appsTable').innerHTML = list.map(a=>`
     <tr>
       <td style="font-size:22px">${a.icon}</td>
       <td><b>${a.name}</b><br><span class="muted">${a.desc}</span></td>
       <td><span class="clickable" onclick="window.open('https://${a.url}','_blank')">${a.url}</span><br><span class="muted">${a.repo}</span></td>
+      <td><span class="badge ${groupBadgeClass(a.group)}">${a.group||'—'}</span></td>
       <td><span class="badge ${a.status==='active'?'badge-active':a.status==='dev'?'badge-draft':'badge-inactive'}">${a.version}</span></td>
       <td style="font-size:10px;max-width:120px;overflow:hidden;text-overflow:ellipsis">${a.sheet||'—'}</td>
       <td>${a.gasUrl||'—'}</td>
@@ -584,13 +616,13 @@ function renderApps() {
 function showAppModal(editId) {
   $('appEditId').value = '';
   $('appModalTitle').textContent = '➕ Thêm App mới';
-  $('appIcon').value='';$('appName').value='';$('appId').value='';$('appVersion').value='';$('appDesc').value='';$('appRepo').value='';$('appUrl').value='';$('appSheet').value='';$('appGasUrl').value='';$('appStatus').value='dev';
+  $('appIcon').value='';$('appName').value='';$('appId').value='';$('appVersion').value='';$('appDesc').value='';$('appRepo').value='';$('appUrl').value='';$('appSheet').value='';$('appGasUrl').value='';$('appStatus').value='dev';$('appGroup').value='Sale';
   if (editId) {
     const a = APPS.find(x=>x.id===editId);
     if (a) {
       $('appEditId').value = a.id;
       $('appModalTitle').textContent = '✏️ Sửa App: '+a.name;
-      $('appIcon').value=a.icon;$('appName').value=a.name;$('appId').value=a.id;$('appVersion').value=a.version;$('appDesc').value=a.desc;$('appRepo').value=a.repo;$('appUrl').value=a.url;$('appSheet').value=a.sheet||'';$('appGasUrl').value=a.gasUrl||'';$('appStatus').value=a.status;
+      $('appIcon').value=a.icon;$('appName').value=a.name;$('appId').value=a.id;$('appVersion').value=a.version;$('appDesc').value=a.desc;$('appRepo').value=a.repo;$('appUrl').value=a.url;$('appSheet').value=a.sheet||'';$('appGasUrl').value=a.gasUrl||'';$('appStatus').value=a.status;$('appGroup').value=a.group||'Sale';
     }
   }
   showModal('appModal');
@@ -611,6 +643,7 @@ function saveApp() {
     sheet: $('appSheet').value.trim(),
     gasUrl: $('appGasUrl').value.trim()||'⏳',
     status: $('appStatus').value,
+    group: $('appGroup').value || 'Sale',
     records: 0, users: 0, lastUpdate: '—'
   };
   if (!data.id || !data.name) { toast('Vui lòng nhập App ID và Tên','error'); return; }
@@ -689,6 +722,7 @@ async function importAppsFromGitHub() {
         existing.repo = r.full_name;
         existing.url = 'ruralwcm.github.io/'+r.name+'/';
         if (!existing.desc) existing.desc = r.description || '';
+        if (!existing.group) existing.group = guessGroup(r.name);
         existing.lastUpdate = new Date(r.updated_at).toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
         updated++;
       } else {
@@ -703,6 +737,7 @@ async function importAppsFromGitHub() {
           sheet: '—',
           gasUrl: '⏳',
           status: 'active',
+          group: guessGroup(r.name),
           records: 0, users: 0,
           lastUpdate: new Date(r.updated_at).toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})
         });
