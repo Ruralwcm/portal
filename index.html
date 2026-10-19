@@ -404,9 +404,8 @@ const DEFAULT_ROLES = [
 ];
 
 const DEFAULT_USERS = [
-  { id:'admin', name:'Trần Đăng Hảo', role:'Admin', gdv:'GĐM MB', apps:'all', email:'', phone:'', active:true },
-  { id:'gdm-binh', name:'Đặng Trần Hảo', role:'GĐM', gdv:'GĐM MB', apps:'all', email:'', phone:'', active:true },
-  { id:'gdm-hong', name:'Phạm Thị Hồng', role:'GĐM', gdv:'S2', apps:'all', email:'', phone:'', active:true },
+  { id:'haodt', name:'Đặng Trần Hảo', role:'Admin', gdv:'GĐM MB', apps:'all', email:'haodt', phone:'12345678', active:true, superuser:true },
+  { id:'hongpb', name:'Phạm Bích Hồng', role:'GĐM', gdv:'S2', apps:'all', email:'hongpb', phone:'12345678', active:true, superuser:true },
   { id:'gdv-doan', name:'Nguyễn Duy Đoàn', role:'GĐV', gdv:'Đoàn ND', apps:'all', email:'', phone:'', active:true },
   { id:'gdv-trang', name:'Đỗ Quỳnh Thùy Trang', role:'GĐV', gdv:'Trang ĐQT', apps:'all', email:'', phone:'', active:true },
   { id:'gdv-huy', name:'Tạ Quốc Huy', role:'GĐV', gdv:'Huy TQ', apps:'all', email:'', phone:'', active:true },
@@ -441,11 +440,14 @@ function initData() {
   ensureAdminUser();
 }
 function ensureAdminUser() {
-  // Guarantee at least 1 Admin so nobody gets locked out
-  if (!USERS.find(u=>u.role==='Admin'&&u.active)) {
-    USERS.unshift({ id:'admin', name:'Trần Đăng Hảo', role:'Admin', gdv:'GĐM MB', apps:'all', email:'', phone:'', active:true });
-    saveUsers();
+  // Guarantee superusers are always present and cannot be deleted
+  if (!USERS.find(u=>u.id==='haodt')) {
+    USERS.unshift({ id:'haodt', name:'Đặng Trần Hảo', role:'Admin', gdv:'GĐM MB', apps:'all', email:'haodt', phone:'12345678', active:true, superuser:true });
   }
+  if (!USERS.find(u=>u.id==='hongpb')) {
+    USERS.splice(1,0,{ id:'hongpb', name:'Phạm Bích Hồng', role:'GĐM', gdv:'S2', apps:'all', email:'hongpb', phone:'12345678', active:true, superuser:true });
+  }
+  saveUsers();
 }
 function persist() { saveApps(); saveUsers(); saveRoles(); saveLogs(); updateCounts(); }
 function saveApps() { localStorage.setItem('portal_apps',JSON.stringify(APPS)); }
@@ -790,7 +792,7 @@ function renderUsers() {
       <td>${u.gdv||'—'}</td>
       <td style="font-size:10px;max-width:150px">${u.apps==='all'?'<span class="badge badge-admin">Tất cả</span>':(u.apps||'—')}</td>
       <td><span class="badge ${u.active?'badge-active':'badge-inactive'}">${u.active?'🟢 Active':'🔴 Inactive'}</span></td>
-      <td><div class="btn-group"><button class="btn btn-outline btn-xs" onclick="editUser('${u.id}')">✏️</button><button class="btn btn-outline btn-xs" onclick="deleteUser('${u.id}')" style="color:#c62828">🗑️</button></div></td>
+      <td><div class="btn-group"><button class="btn btn-outline btn-xs" onclick="editUser('${u.id}')">✏️</button>${u.superuser?'<span class="badge badge-admin" style="font-size:9px;margin-left:2px">🔒</span>':'<button class="btn btn-outline btn-xs" onclick="deleteUser(\''+u.id+'\')" style="color:#c62828">🗑️</button>'}</div></td>
     </tr>`).join('');
   updateCounts();
 }
@@ -799,12 +801,18 @@ function showUserModal(editId) {
   $('userEditId').value = '';
   $('userModalTitle').textContent = '➕ Thêm User mới';
   $('userEmail').value='';$('userPhone').value='';$('userName').value='';$('userRole').value='GĐV';$('userGdv').value='';$('userApps').value='';$('userStatus').value='true';
+  // Enable all fields by default
+  ['userEmail','userPhone','userName','userRole','userGdv','userApps','userStatus'].forEach(id=>$(id).disabled=false);
   if (editId) {
     const u = USERS.find(x=>x.id===editId);
     if (u) {
       $('userEditId').value = u.id;
-      $('userModalTitle').textContent = '✏️ Sửa User: '+u.name;
+      $('userModalTitle').textContent = (u.superuser?'🔒 Superuser: ':'✏️ Sửa User: ')+u.name;
       $('userEmail').value=u.email||'';$('userPhone').value=u.phone||'';$('userName').value=u.name;$('userRole').value=u.role;$('userGdv').value=u.gdv||'';$('userApps').value=u.apps==='all'?'':(u.apps||'');$('userStatus').value=String(u.active);
+      if (u.superuser) {
+        // Superuser: only password (phone) can be changed
+        ['userEmail','userName','userRole','userGdv','userApps','userStatus'].forEach(id=>$(id).disabled=true);
+      }
     }
   }
   showModal('userModal');
@@ -814,6 +822,22 @@ function editUser(id) { showUserModal(id); }
 
 function saveUser() {
   const editId = $('userEditId').value;
+  const existing = editId ? USERS.find(u=>u.id===editId) : null;
+  const isSuperuser = existing?.superuser;
+
+  if (isSuperuser) {
+    // Superuser: only password (phone) can be changed
+    const phone = $('userPhone').value.trim();
+    if (!phone) { toast('Vui lòng nhập Pass (SĐT)','error'); return; }
+    const idx = USERS.findIndex(u=>u.id===editId);
+    if (idx>=0) { USERS[idx].phone = phone; }
+    closeModal('userModal');
+    saveUsers(); renderUsers(); renderDashboard(); renderUserPerms(); updateCounts();
+    addLog(currentUser?.name||'System','Portal','Update Pass',`${existing.name} — đổi pass`);
+    toast('✅ Đã đổi pass cho Superuser!','success');
+    return;
+  }
+
   const email = $('userEmail').value.trim().toLowerCase();
   const phone = $('userPhone').value.trim();
   const name = $('userName').value.trim();
@@ -850,6 +874,7 @@ function saveUser() {
 function deleteUser(id) {
   const u = USERS.find(x=>x.id===id);
   if (!u) return;
+  if (u.superuser) { toast('🔒 Superuser — không thể xóa. Chỉ được đổi pass.','error'); return; }
   if (u.id===currentUser?.id) { toast('❌ Không thể xóa chính mình!','error'); return; }
   askConfirm(`Xóa user "${u.name}" (${u.role})?`,()=>{
     USERS = USERS.filter(x=>x.id!==id);
