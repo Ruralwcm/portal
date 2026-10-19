@@ -156,10 +156,12 @@ tr:hover td{background:#f7f9fa}
 .app-card .app-status-dot{position:absolute;top:12px;right:12px;width:8px;height:8px;border-radius:50%}
 .app-card .app-status-dot.online{background:#4caf50}.app-card .app-status-dot.offline{background:#ccc}.app-card .app-status-dot.dev{background:#ff9800}
 /* ── GROUP SECTIONS ── */
-.group-section{margin-bottom:18px}
+.groups-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start}
+@media(max-width:900px){.groups-row{grid-template-columns:1fr}}
+.group-section{margin-bottom:0;min-width:0}
 .group-header{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#1a3c6e;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e0e4e8}
 .group-header .group-count{background:#1a3c6e;color:#fff;font-size:10px;padding:1px 8px;border-radius:10px;font-weight:600}
-.group-section .grid-3{margin-bottom:0}
+.group-section .group-cards{display:flex;flex-direction:column;gap:10px}
 
 /* ── USER ROW ── */
 .user-avatar-sm{width:28px;height:28px;border-radius:50%;background:#e0e4e8;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#555;margin-right:8px;flex-shrink:0}
@@ -209,7 +211,7 @@ tr:hover td{background:#f7f9fa}
   <div class="login-box">
     <div class="logo-icon">🏠</div>
     <h1>Rural <span>Portal</span></h1>
-    <div class="sub">Quản trị Web App · v6.0</div>
+    <div class="sub">Quản trị Web App · v7.0</div>
     <label>Mã nhân viên</label>
     <input type="text" id="loginInput" placeholder="Nhập mã NV..." maxlength="20" autocomplete="off">
     <div class="hint">VD: NV001, hoặc mã GĐV/QLKV</div>
@@ -222,7 +224,7 @@ tr:hover td{background:#f7f9fa}
 <div class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <div class="logo-icon">🏠</div>
-    <div><div class="logo">Rural <span>Portal</span> <span style="font-size:9px;background:rgba(255,193,7,.2);color:#ffc107;padding:2px 6px;border-radius:4px;font-weight:700;vertical-align:middle">v6.0</span></div><div class="sub">Quản trị hệ thống</div></div>
+    <div><div class="logo">Rural <span>Portal</span> <span style="font-size:9px;background:rgba(255,193,7,.2);color:#ffc107;padding:2px 6px;border-radius:4px;font-weight:700;vertical-align:middle">v7.0</span></div><div class="sub">Quản trị hệ thống</div></div>
   </div>
   <div class="sidebar-nav">
     <div class="nav-section">Tổng quan</div>
@@ -246,14 +248,14 @@ tr:hover td{background:#f7f9fa}
 <div class="main" id="mainArea">
   <div class="topbar">
     <h1 id="pageTitle">📊 Dashboard</h1>
-    <div class="topbar-actions"><span style="background:rgba(255,255,255,.2);padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;margin-right:8px">v6.0</span><span id="clock">🕐</span></div>
+    <div class="topbar-actions"><span style="background:rgba(255,255,255,.2);padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;margin-right:8px">v7.0</span><span id="clock">🕐</span></div>
   </div>
   <div class="content">
 
     <!-- ── DASHBOARD ── -->
     <div class="page active" id="page-dashboard">
       <div class="stats-row" id="dashStats"></div>
-      <div class="card"><div class="card-header"><h3>📱 Web App Status</h3><button class="btn btn-outline btn-sm" onclick="switchPage('apps')">Quản lý Apps →</button></div><div class="grid-3" id="dashAppCards"></div></div>
+      <div class="card"><div class="card-header"><h3>📱 Web App Status</h3><button class="btn btn-outline btn-sm" onclick="switchPage('apps')">Quản lý Apps →</button></div><div id="dashAppCards"></div></div>
       <div class="card"><h3>🕐 Hoạt động gần đây</h3><div class="table-wrap"><table><thead><tr><th>Thời gian</th><th>User</th><th>App</th><th>Hành động</th><th>Kết quả</th></tr></thead><tbody id="dashActivity"></tbody></table></div></div>
     </div>
 
@@ -363,7 +365,7 @@ tr:hover td{background:#f7f9fa}
 
 // ── Default data ──
 const DEFAULT_APPS = [
-  { id:'portal', group:'Hành chính & nhân sự', name:'Portal Quản Trị', icon:'🖥️', desc:'Cổng quản trị tập trung Web App Rural', url:'ruralwcm.github.io/portal/', repo:'Ruralwcm/portal', version:'v6.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  { id:'portal', group:'Hành chính & nhân sự', name:'Portal Quản Trị', icon:'🖥️', desc:'Cổng quản trị tập trung Web App Rural', url:'ruralwcm.github.io/portal/', repo:'Ruralwcm/portal', version:'v7.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
   { id:'ctkm-rural', group:'Sale', name:'CTKM Rural', icon:'🏷️', desc:'Dashboard CTKM + Khảo sát nhận hàng', url:'ruralwcm.github.io/ctkm-rural/', repo:'Ruralwcm/ctkm-rural', version:'v2.34', sheet:'1fMmEm1GC9aei_3oeu2vcadPVsUM9ms9eVhm99d7pF8A', gasUrl:'✅', status:'active', records:88, users:25, lastUpdate:'09/10 08:30' },
   { id:'checkcam', group:'Setup & Mở mới', name:'CheckCam', icon:'📸', desc:'Check camera tuân thủ cửa hàng', url:'ruralwcm.github.io/checkcam/', repo:'Ruralwcm/checkcam', version:'v1.2.0', sheet:'1NKmzINqmfbnRMNKp8JFiCcUKi_SR-iozOQrrj58XDuE', gasUrl:'✅', status:'active', records:312, users:92, lastUpdate:'09/10 07:15' },
   { id:'khaosat-xaydung-setup', group:'Setup & Mở mới', name:'Khảo sát CSVC', icon:'🏗️', desc:'Form khảo sát CSVC 34 hạng mục', url:'ruralwcm.github.io/khaosat-xaydung-setup/', repo:'Ruralwcm/khaosat-xaydung-setup', version:'v5.3', sheet:'1NKmzINqmfbnRMNKp8JFiCcUKi_SR-iozOQrrj58XDuE', gasUrl:'✅', status:'active', records:156, users:45, lastUpdate:'09/10 06:00' },
@@ -579,11 +581,11 @@ function renderDashboard() {
   const grouped = APP_GROUPS.map(g => {
     const items = APPS.filter(a=>a.group===g);
     if (!items.length) return '';
-    return '<div class="group-section"><div class="group-header">'+g+' <span class="group-count">'+items.length+'</span></div><div class="grid-3">'+items.map(appCard).join('')+'</div></div>';
+    return '<div class="group-section"><div class="group-header">'+g+' <span class="group-count">'+items.length+'</span></div><div class="group-cards">'+items.map(appCard).join('')+'</div></div>';
   }).join('');
   const others = APPS.filter(a=>!a.group || !APP_GROUPS.includes(a.group));
-  const othersHTML = others.length ? '<div class="group-section"><div class="group-header">Khác <span class="group-count">'+others.length+'</span></div><div class="grid-3">'+others.map(appCard).join('')+'</div></div>' : '';
-  $('dashAppCards').innerHTML = grouped + othersHTML;
+  const othersHTML = others.length ? '<div class="group-section"><div class="group-header">Khác <span class="group-count">'+others.length+'</span></div><div class="group-cards">'+others.map(appCard).join('')+'</div></div>' : '';
+  $('dashAppCards').innerHTML = '<div class="groups-row">'+grouped+othersHTML+'</div>';
 
   const recentLogs = LOGS.slice(0,8);
   $('dashActivity').innerHTML = recentLogs.length ? recentLogs.map(l=>`<tr><td>${l.time}</td><td>${l.user}</td><td>${l.app}</td><td>${l.action}</td><td>${l.status} ${l.detail||''}</td></tr>`).join('') : '<tr class="empty-row"><td colspan="5">Chưa có hoạt động nào</td></tr>';
