@@ -440,11 +440,17 @@ function initData() {
   ensureAdminUser();
 }
 function ensureAdminUser() {
-  // Guarantee superusers are always present and cannot be deleted
-  if (!USERS.find(u=>u.id==='haodt')) {
+  // Force-update superuser credentials on every init (fixes old localStorage override)
+  const haodt = USERS.find(u=>u.id==='haodt');
+  if (haodt) {
+    Object.assign(haodt, { name:'Đặng Trần Hảo', role:'Admin', gdv:'GĐM MB', apps:'all', email:'haodt', phone:'12345678', active:true, superuser:true });
+  } else {
     USERS.unshift({ id:'haodt', name:'Đặng Trần Hảo', role:'Admin', gdv:'GĐM MB', apps:'all', email:'haodt', phone:'12345678', active:true, superuser:true });
   }
-  if (!USERS.find(u=>u.id==='hongpb')) {
+  const hongpb = USERS.find(u=>u.id==='hongpb');
+  if (hongpb) {
+    Object.assign(hongpb, { name:'Phạm Bích Hồng', role:'GĐM', gdv:'S2', apps:'all', email:'hongpb', phone:'12345678', active:true, superuser:true });
+  } else {
     USERS.splice(1,0,{ id:'hongpb', name:'Phạm Bích Hồng', role:'GĐM', gdv:'S2', apps:'all', email:'hongpb', phone:'12345678', active:true, superuser:true });
   }
   saveUsers();
