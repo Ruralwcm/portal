@@ -440,7 +440,7 @@ const DEFAULT_APPS = [
   { id:'chi-phi-dinh-ky', group:'Hành chính & nhân sự', name:'Chi Phí Định Kỳ', icon:'💰', desc:'Form chi phí định kỳ cửa hàng', url:'ruralwcm.github.io/chi-phi-dinh-ky/', repo:'Ruralwcm/chi-phi-dinh-ky', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'dev', records:89, users:18, lastUpdate:'07/10 15:00' },
   { id:'tkmb-field', group:'Setup & Mở mới', name:'TKMB Field', icon:'🗺️', desc:'Scan QH & Tiếp nhận MB (NV/Chuyên viên)', url:'ruralwcm.github.io/tkmb-field/', repo:'Ruralwcm/tkmb-field', version:'v1.0', sheet:'1jac8uf8eeB57C-zZ85Lg_l-UwpPxOTPkcoQ2mywMZyw', gasUrl:'✅', status:'active', records:0, users:0, lastUpdate:'19/10' },
   { id:'tkmb-dashboard', group:'Setup & Mở mới', name:'TKMB Dashboard', icon:'📊', desc:'Dashboard TKMB by HaoDT', url:'ruralwcm.github.io/tkmb-dashboard/', repo:'Ruralwcm/tkmb-dashboard', version:'v1.0', sheet:'1jac8uf8eeB57C-zZ85Lg_l-UwpPxOTPkcoQ2mywMZyw', gasUrl:'✅', status:'active', records:0, users:0, lastUpdate:'19/10' },
-  { id:'scan-qh', group:'Setup & Mở mới', name:'Scan Điểm QH', icon:'🔍', desc:'Scan điểm QH — Khảo sát thực địa', url:'ruralwcm.github.io/scan-qh/', repo:'Ruralwcm/scan-qh', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
+  
   { id:'nso', group:'Setup & Mở mới', name:'NSO Miền Bắc', icon:'🏪', desc:'NSO Miền Bắc Web App', url:'ruralwcm.github.io/nso/', repo:'Ruralwcm/nso', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
   { id:'checkstore', group:'Setup & Mở mới', name:'CheckStore', icon:'✅', desc:'Tiến độ Check Store hàng tháng', url:'ruralwcm.github.io/checkstore/', repo:'Ruralwcm/checkstore', version:'v4', sheet:'1NKmzINqmfbnRMNKp8JFiCcUKi_SR-iozOQrrj58XDuE', gasUrl:'✅', status:'active', records:0, users:0, lastUpdate:'—' },
   { id:'kstt', group:'Setup & Mở mới', name:'KSTT', icon:'📋', desc:'Kiểm Soát Thực Tế — Báo cáo & duyệt', url:'ruralwcm.github.io/kstt/', repo:'Ruralwcm/kstt', version:'v1.0', sheet:'—', gasUrl:'⏳', status:'active', records:0, users:0, lastUpdate:'—' },
@@ -647,7 +647,7 @@ const APP_GROUPS = ['Sale','Setup & Mở mới','Hành chính & nhân sự'];
 
 function guessGroup(name) {
   if (['ctkm','km-rural','mch3','thongkedulieu','fc-hanghoa','thukhay','khtt','ra-soat-doi-thu','pog'].some(k=>name.startsWith(k))) return 'Sale';
-  if (['tkmb','scan-qh','nso','checkstore','checkcam','khaosat','kstt','bcha'].some(k=>name.startsWith(k))) return 'Setup & Mở mới';
+  if (['tkmb','nso','checkstore','checkcam','khaosat','kstt','bcha'].some(k=>name.startsWith(k))) return 'Setup & Mở mới';
   if (['ctp','chi-phi','nhansu','tuyen-dung','rural-forms','portal'].some(k=>name.startsWith(k))) return 'Hành chính & nhân sự';
   return 'Setup & Mở mới';
 }
@@ -784,7 +784,7 @@ function deleteApp(id) {
 }
 
 function guessAppIcon(name) {
-  const map = {'portal':'🖥️','tkmb':'📍','tkmb-field':'🗺️','tkmb-dashboard':'📊','scan-qh':'🔍',
+  const map = {'portal':'🖥️','tkmb':'📍','tkmb-field':'🗺️','tkmb-dashboard':'📊',
     'nso':'🏪','checkstore':'✅','checkcam':'📸','kstt':'📋','bcha-kstt':'🖼️',
     'khaosat-xaydung-setup':'🏗️','fc-hanghoa':'📦','ctkm-rural':'🏷️','km-rural':'📈',
     'mch3-slc':'🔬','ctp':'✈️','ctp-manager':'🛫','chi-phi-dinh-ky':'💡',
